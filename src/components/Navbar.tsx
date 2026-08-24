@@ -169,30 +169,15 @@ export const Navbar: React.FC = () => {
             onClick={() => handleNavClick('home')}
             className="flex items-center gap-3.5 cursor-pointer group"
           >
-            {/* Custom Algeria / El Oued Crest */}
-            <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-[#C89D66] to-[#A3753C] p-0.5 shadow-md flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition transform">
-              <div className="w-full h-full bg-[#0F1E36] rounded-[10px] flex flex-col items-center justify-center p-1 text-center">
-                {/* SVG Dome & Crescent Icon */}
-                <svg viewBox="0 0 24 24" className="w-7 h-7 text-[#F59E0B]" fill="none" stroke="currentColor" strokeWidth="1.7">
-                  <path d="M12 2C7 2 3 6 3 11c0 4 3 7 9 11 6-4 9-7 9-11 0-5-4-9-9-9z" fill="#C89D66" fillOpacity="0.2"/>
-                  <path d="M4 14h16M7 18h10M12 2v4M10 4h4" stroke="#FDE68A" strokeLinecap="round"/>
-                  <circle cx="12" cy="10" r="2" fill="#F59E0B"/>
-                </svg>
-              </div>
-            </div>
-
-            <div>
-              <p className="text-[10px] sm:text-[11px] font-medium text-[#C89D66] uppercase tracking-wider">
-                {t.ministryName}
-              </p>
-              <h1 aria-label="مديرية السياحة والصناعة التقليدية لولاية الوادي | Directorate of Tourism and Handicrafts – El Oued Province" className="mt-0.5 flex max-w-[245px] flex-col text-right font-heading leading-tight group-hover:text-[#F3E5D8] transition sm:max-w-none">
-                <span lang="ar" dir="rtl" className="text-[13px] font-black text-white sm:text-lg">مديرية السياحة والصناعة التقليدية لولاية الوادي</span>
-                <span lang="en" dir="ltr" className="mt-0.5 text-[8px] font-semibold tracking-[.02em] text-[#F5D0A9] sm:text-[11px]">Directorate of Tourism and Handicrafts – El Oued Province</span>
-                <span lang="zgh" dir="ltr" className="mt-0.5 font-tifinagh text-[10px] font-semibold tracking-wide text-[#D7E7DE] sm:text-xs">ⵜⴰⵏⵎⵀⵍⵜ ⵏ ⵜⵓⵔⵉⵙⵎ ⴷ ⵜⵃⵔⴼⵉⵏ – ⵡⴰⴷⵉ ⵙⵓⴼ</span>
-              </h1>
-              <p className="mt-1 text-[10px] text-slate-300 hidden sm:block">
-                {t.slogan}
-              </p>
+            <div className="rounded-xl bg-white p-1.5 shadow-md transition duration-200 group-hover:scale-[1.02] sm:p-2">
+              <img
+                src={`${import.meta.env.BASE_URL}directorate-official-header.jpg`}
+                alt={t.directorateName}
+                className="h-auto w-[215px] object-contain sm:w-[360px] lg:w-[410px]"
+                width="1078"
+                height="372"
+                decoding="async"
+              />
             </div>
           </div>
 
