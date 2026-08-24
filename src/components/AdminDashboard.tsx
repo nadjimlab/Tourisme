@@ -53,6 +53,7 @@ export const AdminDashboard: React.FC = () => {
   const [loginError, setLoginError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [adminTab, setAdminTab] = useState<'overview' | 'sites' | 'complaints' | 'events' | 'artisans' | 'news'>('overview');
+  const profileSetupRequired = /profiles|schema cache/i.test(loginError);
 
   // New Site Form
   const [newSite, setNewSite] = useState({
@@ -262,9 +263,16 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             {loginError && (
-              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-center gap-2" role="alert">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                <span>{loginError}</span>
+              <div className="space-y-2" role="alert">
+                <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                  <span>{loginError}</span>
+                </div>
+                {profileSetupRequired && (
+                  <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-6 text-amber-900">
+                    {language === 'ar' ? 'يجب على مسؤول Supabase إنشاء جدول profiles وتعيين دور admin أو editor للحساب. ملف الإصلاح موجود في supabase/repair_profiles.sql.' : language === 'fr' ? 'Un administrateur Supabase doit créer la table profiles et attribuer le rôle admin ou editor au compte. Le correctif se trouve dans supabase/repair_profiles.sql.' : 'A Supabase administrator must create the profiles table and assign the admin or editor role to this account. The fix is available in supabase/repair_profiles.sql.'}
+                  </p>
+                )}
               </div>
             )}
 
