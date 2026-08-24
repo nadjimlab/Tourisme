@@ -42,8 +42,8 @@ jobs:
         run: pnpm build
         env:
           VITE_BASE_PATH: /Tourisme/
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL || 'https://cwbenhuiextfoiyfboxo.supabase.co' }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3YmVuaHVpZXh0Zm9peWZib3hvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDIwMjcsImV4cCI6MjA5OTMxODAyN30.coWbBaPvT08K_zk8ZQyedJ-gFcr_q9HQS8r5mXqu50I' }}
 
       - name: Add GitHub Pages SPA fallback
         run: cp dist/index.html dist/404.html
