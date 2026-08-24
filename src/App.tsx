@@ -11,7 +11,8 @@ import { NewsSection } from './components/NewsSection';
 import { AdminDashboard } from './components/AdminDashboard';
 import { Footer } from './components/Footer';
 import { InstitutionalPages } from './components/InstitutionalPages';
-import { ProvinceIntro } from './components/ProvinceIntro';
+import { FeaturedSites } from './components/FeaturedSites';
+import { DirectorateBrief } from './components/DirectorateBrief';
 import { 
   ChevronUp, 
   MapPin, 
@@ -83,36 +84,33 @@ const MainLayout: React.FC = () => {
             {/* 1. Hero with Real Imagery, Stats & Search */}
             <Hero />
 
-            {/* 2. Short official introduction to El Oued Province */}
-            <ProvinceIntro />
+            {/* 2. Directorate brief */}
+            <DirectorateBrief />
 
-            {/* 3. Interactive Map Preview Section */}
-            <section className="py-4">
-              <InteractiveMap />
-            </section>
+            {/* 3. Featured destination cards */}
+            <FeaturedSites />
 
-            {/* 4. Investment Teaser Section */}
-            <section className="py-6">
-              <InvestmentSection />
-            </section>
-
-            {/* 5. Digital Services Teaser */}
-            <section className="py-6">
-              <DigitalServices />
-            </section>
-
-            {/* 6. Artisans & Souf Crafts Section */}
-            <section className="py-6">
+            {/* 4. Souf handicrafts and artisan directory */}
+            <section className="py-2">
               <HandicraftsDirectory />
             </section>
 
-            {/* 7. Events & Festivals Calendar */}
-            <section className="py-6">
+            {/* 5. Tourism investment */}
+            <section className="py-2">
+              <InvestmentSection />
+            </section>
+
+            {/* 6. Digital services and citizen requests */}
+            <section className="py-2">
+              <DigitalServices />
+            </section>
+
+            {/* 7. Events and official announcements */}
+            <section className="py-2">
               <EventsCalendar />
             </section>
 
-            {/* 8. Official Communiques & News */}
-            <section className="py-6">
+            <section className="py-2">
               <NewsSection />
             </section>
           </div>
