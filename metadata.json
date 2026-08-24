@@ -1,0 +1,6 @@
+{
+  "name": "Directorate of Tourism - El Oued",
+  "description": "Official portal for the Directorate of Tourism and Handicrafts of El Oued Province (Algeria), featuring interactive tourist maps, site guides, digital citizen services, handicrafts directory, and administration dashboard.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
