@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
 import { InteractiveMap } from './components/InteractiveMap';
 import { InvestmentSection } from './components/InvestmentSection';
 import { DigitalServices } from './components/DigitalServices';
@@ -88,40 +87,37 @@ const MainLayout: React.FC = () => {
           <>
             <OfficialPortal />
             <div className="space-y-4">
-            {/* 1. Hero with Real Imagery, Stats & Search */}
-            <Hero />
-
-            {/* 2. Three-pillar official portal navigation */}
+            {/* 1. Three-pillar official portal navigation */}
             <PortalPillars />
 
-            {/* 3. Directorate brief */}
+            {/* 2. Directorate brief */}
             <DirectorateBrief />
 
-            {/* 4. Featured destination cards */}
+            {/* 3. Featured destination cards */}
             <FeaturedSites />
 
-            {/* 5. Saharan tourism circuits */}
+            {/* 4. Saharan tourism circuits */}
             <SaharanCircuits />
 
-            {/* 6. Official-style tourism directory shortcuts */}
+            {/* 5. Official-style tourism directory shortcuts */}
             <TourismDirectory />
 
-            {/* 7. Souf handicrafts and artisan directory */}
+            {/* 6. Souf handicrafts and artisan directory */}
             <section className="py-2">
               <HandicraftsDirectory />
             </section>
 
-            {/* 8. Tourism investment */}
+            {/* 7. Tourism investment */}
             <section className="py-2">
               <InvestmentSection />
             </section>
 
-            {/* 9. Digital services and citizen requests */}
+            {/* 8. Digital services and citizen requests */}
             <section className="py-2">
               <DigitalServices />
             </section>
 
-            {/* 10. Events and official announcements */}
+            {/* 9. Events and official announcements */}
             <section className="py-2">
               <EventsCalendar />
             </section>
