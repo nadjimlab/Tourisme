@@ -726,17 +726,22 @@ export const AdminDashboard: React.FC = () => {
                       <div>
                         <h4 className="font-bold text-[#0F1E36]">{site.name.ar}</h4>
                         <span className="text-[11px] text-slate-500">{site.commune.ar} • {site.category}</span>
+                        {site.id.startsWith('ouedna-place-') && <span className="mt-1 inline-block rounded-full bg-[#E8F1EC] px-2 py-0.5 text-[10px] font-bold text-[#0C6B58]">Ouedna · للعرض فقط</span>}
                       </div>
                     </div>
 
                     <button
+                      type="button"
+                      disabled={site.id.startsWith('ouedna-place-')}
                       onClick={() => {
+                        if (site.id.startsWith('ouedna-place-')) return;
                         if (confirm(`هل أنت متأكد من حذف معلم: ${site.name.ar}؟`)) {
                           deleteSite(site.id);
                         }
                       }}
-                      className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition"
-                      title="حذف"
+                      className={`rounded-lg p-2 transition ${site.id.startsWith('ouedna-place-') ? 'cursor-not-allowed text-slate-300' : 'text-rose-600 hover:bg-rose-50'}`}
+                      title={site.id.startsWith('ouedna-place-') ? 'معلم من Ouedna — للعرض فقط' : 'حذف'}
+                      aria-label={site.id.startsWith('ouedna-place-') ? 'معلم من Ouedna للعرض فقط' : 'حذف المعلم'}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

@@ -282,10 +282,7 @@ export async function insertNews(article: NewsArticle) {
 
 export async function deleteContent(table: 'sites' | 'events' | 'artisans' | 'news', id: string) {
   if (table === 'sites' && id.startsWith('ouedna-place-')) {
-    const legacyId = Number(id.replace('ouedna-place-', ''));
-    const legacyResult = await supabase.from('places').delete().eq('id', legacyId);
-    if (legacyResult.error) throw new Error(legacyResult.error.message);
-    return;
+    throw new Error('هذا المعلم مصدره جدول Ouedna المشترك. لا يمكن حذفه من بوابة Tourisme حفاظاً على بيانات الموقع الأصلي.');
   }
   const result = await supabase.from(table).delete().eq('id', id);
   if (result.error) throw new Error(result.error.message);
