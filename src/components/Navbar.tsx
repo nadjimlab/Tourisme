@@ -188,7 +188,7 @@ export const Navbar: React.FC = () => {
               <h1 aria-label="مديرية السياحة والصناعة التقليدية لولاية الوادي | Directorate of Tourism and Handicrafts – El Oued Province" className="mt-0.5 flex max-w-[245px] flex-col text-right font-heading leading-tight group-hover:text-[#F3E5D8] transition sm:max-w-none">
                 <span lang="ar" dir="rtl" className="text-[13px] font-black text-white sm:text-lg">مديرية السياحة والصناعة التقليدية لولاية الوادي</span>
                 <span lang="en" dir="ltr" className="mt-0.5 text-[8px] font-semibold tracking-[.02em] text-[#F5D0A9] sm:text-[11px]">Directorate of Tourism and Handicrafts – El Oued Province</span>
-                <span lang="zgh" dir="ltr" className="mt-0.5 font-tifinagh text-[10px] font-semibold tracking-wide text-[#D7E7DE] sm:text-xs">ⵜⴰⵏⵎⵉⵔⵜ ⵏ ⵜⵓⵔⵉⵙⵎ ⴷ ⵓⵙⵏⴰⵡ ⵏ ⵡⴰⴷ ⵙⵓⴼ</span>
+                <span lang="zgh" dir="ltr" className="mt-0.5 font-tifinagh text-[10px] font-semibold tracking-wide text-[#D7E7DE] sm:text-xs">ⵜⴰⵏⵎⵀⵍⵜ ⵏ ⵜⵓⵔⵉⵙⵎ ⴷ ⵜⵃⵔⴼⵉⵏ – ⵡⴰⴷⵉ ⵙⵓⴼ</span>
               </h1>
               <p className="mt-1 text-[10px] text-slate-300 hidden sm:block">
                 {t.slogan}
