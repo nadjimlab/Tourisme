@@ -15,6 +15,7 @@ import { FeaturedSites } from './components/FeaturedSites';
 import { DirectorateBrief } from './components/DirectorateBrief';
 import { TourismDirectory } from './components/TourismDirectory';
 import { PortalPillars } from './components/PortalPillars';
+import { SaharanCircuits } from './components/SaharanCircuits';
 import { 
   ChevronUp, 
   MapPin, 
@@ -95,25 +96,28 @@ const MainLayout: React.FC = () => {
             {/* 4. Featured destination cards */}
             <FeaturedSites />
 
-            {/* 5. Official-style tourism directory shortcuts */}
+            {/* 5. Saharan tourism circuits */}
+            <SaharanCircuits />
+
+            {/* 6. Official-style tourism directory shortcuts */}
             <TourismDirectory />
 
-            {/* 6. Souf handicrafts and artisan directory */}
+            {/* 7. Souf handicrafts and artisan directory */}
             <section className="py-2">
               <HandicraftsDirectory />
             </section>
 
-            {/* 6. Tourism investment */}
+            {/* 8. Tourism investment */}
             <section className="py-2">
               <InvestmentSection />
             </section>
 
-            {/* 7. Digital services and citizen requests */}
+            {/* 9. Digital services and citizen requests */}
             <section className="py-2">
               <DigitalServices />
             </section>
 
-            {/* 8. Events and official announcements */}
+            {/* 10. Events and official announcements */}
             <section className="py-2">
               <EventsCalendar />
             </section>
