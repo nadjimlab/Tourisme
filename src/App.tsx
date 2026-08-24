@@ -11,6 +11,7 @@ import { NewsSection } from './components/NewsSection';
 import { AdminDashboard } from './components/AdminDashboard';
 import { Footer } from './components/Footer';
 import { InstitutionalPages } from './components/InstitutionalPages';
+import { ProvinceIntro } from './components/ProvinceIntro';
 import { 
   ChevronUp, 
   MapPin, 
@@ -82,32 +83,35 @@ const MainLayout: React.FC = () => {
             {/* 1. Hero with Real Imagery, Stats & Search */}
             <Hero />
 
-            {/* 2. Interactive Map Preview Section */}
-            <section className="py-6">
+            {/* 2. Short official introduction to El Oued Province */}
+            <ProvinceIntro />
+
+            {/* 3. Interactive Map Preview Section */}
+            <section className="py-4">
               <InteractiveMap />
             </section>
 
-            {/* 3. Investment Teaser Section */}
+            {/* 4. Investment Teaser Section */}
             <section className="py-6">
               <InvestmentSection />
             </section>
 
-            {/* 4. Digital Services Teaser */}
+            {/* 5. Digital Services Teaser */}
             <section className="py-6">
               <DigitalServices />
             </section>
 
-            {/* 5. Artisans & Souf Crafts Section */}
+            {/* 6. Artisans & Souf Crafts Section */}
             <section className="py-6">
               <HandicraftsDirectory />
             </section>
 
-            {/* 6. Events & Festivals Calendar */}
+            {/* 7. Events & Festivals Calendar */}
             <section className="py-6">
               <EventsCalendar />
             </section>
 
-            {/* 7. Official Communiques & News */}
+            {/* 8. Official Communiques & News */}
             <section className="py-6">
               <NewsSection />
             </section>
