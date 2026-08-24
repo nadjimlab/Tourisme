@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { DirectContactForm } from './DirectContactForm';
 import { ChevronDown, Clock3, FileText, Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
 
 const copy = {
@@ -123,6 +124,7 @@ export const InstitutionalPages: React.FC<{ page: InstitutionalTab }> = ({ page 
             <button onClick={() => setActiveTab('services')} className="rounded-xl bg-[#0C6B58] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#095243] active:scale-[.98]">{text.openServices}</button>
             <a href="https://el-oued.mta.gov.dz/" target="_blank" rel="noopener noreferrer" className="rounded-xl border border-[#D8C7AF] bg-white px-5 py-3 text-sm font-bold text-[#17324D] transition hover:border-[#B8874D] active:scale-[.98]">el-oued.mta.gov.dz</a>
           </div>
+          <div className="mt-8"><DirectContactForm /></div>
         </div>
       </section>
     );
