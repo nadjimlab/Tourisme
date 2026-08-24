@@ -16,6 +16,7 @@ import { DirectorateBrief } from './components/DirectorateBrief';
 import { TourismDirectory } from './components/TourismDirectory';
 import { PortalPillars } from './components/PortalPillars';
 import { SaharanCircuits } from './components/SaharanCircuits';
+import { OfficialPortal } from './components/OfficialPortal';
 import { 
   ChevronUp, 
   MapPin, 
@@ -33,6 +34,7 @@ const MainLayout: React.FC = () => {
 
   useEffect(() => {
     const sectionTitle: Partial<Record<typeof activeTab, string>> = {
+      official: language === 'ar' ? 'الصفحة الرسمية' : language === 'fr' ? 'Portail officiel' : 'Official Portal',
       map: language === 'ar' ? 'الخريطة والمعالم السياحية' : language === 'fr' ? 'Carte & sites touristiques' : 'Map & Tourist Sites',
       events: language === 'ar' ? 'أجندة الفعاليات' : language === 'fr' ? 'Agenda des événements' : 'Events Agenda',
       artisan: language === 'ar' ? 'دليل الصناعة التقليدية' : language === 'fr' ? 'Guide de l’artisanat' : 'Handicrafts Directory',
@@ -128,6 +130,7 @@ const MainLayout: React.FC = () => {
           </div>
         )}
 
+        {activeTab === 'official' && <OfficialPortal />}
         {activeTab === 'map' && <InteractiveMap />}
         {activeTab === 'investment' && <InvestmentSection />}
         {activeTab === 'services' && <DigitalServices />}

@@ -25,7 +25,7 @@ const copy = {
     pillars: [
       {
         id: 'official',
-        tab: 'home' as NavTab,
+        tab: 'official' as NavTab,
         title: 'الصفحة الرسمية',
         description: 'تعريف بالمديرية، الأخبار، الإعلانات، والمعلومات الرسمية الموثوقة.',
         items: [
@@ -69,7 +69,7 @@ const copy = {
     pillars: [
       {
         id: 'official',
-        tab: 'home' as NavTab,
+        tab: 'official' as NavTab,
         title: 'Portail officiel',
         description: 'Présentation de la Direction, actualités, annonces et informations institutionnelles fiables.',
         items: [
@@ -113,7 +113,7 @@ const copy = {
     pillars: [
       {
         id: 'official',
-        tab: 'home' as NavTab,
+        tab: 'official' as NavTab,
         title: 'Official portal',
         description: 'Directorate profile, news, announcements and trusted institutional information.',
         items: [

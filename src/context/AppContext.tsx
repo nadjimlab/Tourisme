@@ -27,7 +27,7 @@ import {
 } from '../types';
 import { translations } from '../i18n/translations';
 
-export type NavTab = 'home' | 'map' | 'investment' | 'services' | 'artisan' | 'events' | 'news' | 'admin' | 'about' | 'contact' | 'privacy' | 'terms' | 'faq';
+export type NavTab = 'home' | 'official' | 'map' | 'investment' | 'services' | 'artisan' | 'events' | 'news' | 'admin' | 'about' | 'contact' | 'privacy' | 'terms' | 'faq';
 
 type LoginResult = { ok: boolean; error?: string };
 
@@ -78,7 +78,7 @@ interface AppContextType {
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
-const navTabs: NavTab[] = ['home', 'map', 'investment', 'services', 'artisan', 'events', 'news', 'admin', 'about', 'contact', 'privacy', 'terms', 'faq'];
+const navTabs: NavTab[] = ['home', 'official', 'map', 'investment', 'services', 'artisan', 'events', 'news', 'admin', 'about', 'contact', 'privacy', 'terms', 'faq'];
 const tabFromHash = (): NavTab => {
   const hash = window.location.hash.replace(/^#/, '') as NavTab;
   return navTabs.includes(hash) ? hash : 'home';
