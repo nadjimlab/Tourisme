@@ -85,7 +85,9 @@ const MainLayout: React.FC = () => {
       {/* Main Content Router */}
       <main id="main-content" className="flex-1">
         {activeTab === 'home' && (
-          <div className="space-y-4">
+          <>
+            <OfficialPortal />
+            <div className="space-y-4">
             {/* 1. Hero with Real Imagery, Stats & Search */}
             <Hero />
 
@@ -127,7 +129,8 @@ const MainLayout: React.FC = () => {
             <section className="py-2">
               <NewsSection />
             </section>
-          </div>
+            </div>
+          </>
         )}
 
         {activeTab === 'official' && <OfficialPortal />}

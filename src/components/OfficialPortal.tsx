@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   ArrowRight,
   BellRing,
-  CheckCircle2,
   ExternalLink,
   FileText,
   Landmark,
@@ -132,17 +131,16 @@ export const OfficialPortal: React.FC = () => {
 
   return (
     <div className="bg-[#FAF7F2] pb-12">
-      <section className="relative overflow-hidden bg-[#17324D] px-4 py-14 text-white sm:px-8">
-        <div className="pointer-events-none absolute inset-0 opacity-40 [background-image:radial-gradient(circle_at_15%_25%,rgba(200,157,102,.35),transparent_24%),radial-gradient(circle_at_85%_85%,rgba(12,107,88,.3),transparent_28%)]" />
+      <section className="relative min-h-[420px] overflow-hidden px-4 py-16 text-white sm:min-h-[520px] sm:px-8">
+        <img src={`${import.meta.env.BASE_URL}el-oued-souf-hero.jpg`} alt={language === 'ar' ? 'كثبان وادي سوف وخيام الصحراء' : language === 'fr' ? 'Dunes du Souf et tentes sahariennes' : 'Souf dunes and Saharan tents'} className="absolute inset-0 h-full w-full object-cover" width="2560" height="1440" loading="eager" decoding="async" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0A1628]/95 via-[#17324D]/85 to-[#17324D]/65" />
+        <div className="pointer-events-none absolute inset-0 opacity-35 [background-image:radial-gradient(circle_at_15%_25%,rgba(200,157,102,.35),transparent_24%),radial-gradient(circle_at_85%_85%,rgba(12,107,88,.3),transparent_28%)]" />
         <div className="relative mx-auto max-w-7xl">
           <div className="max-w-4xl">
             <div className="mb-3 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.16em] text-[#E5BB7C]"><ShieldCheck className="h-4 w-4" />{current.eyebrow}</div>
             <h1 className="font-heading text-3xl font-black leading-tight sm:text-5xl">{current.title}</h1>
             <p className="mt-5 max-w-3xl text-sm leading-7 text-slate-200 sm:text-lg">{current.intro}</p>
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <a href="https://el-oued.mta.gov.dz/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-[#E5BB7C] px-5 py-3 text-xs font-bold text-[#17324D] transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#E5BB7C]"><ExternalLink className="h-4 w-4" />{current.sourceCta}</a>
-              <span className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-xs text-slate-200"><CheckCircle2 className="h-4 w-4 text-emerald-300" />{current.verified}</span>
-            </div>
+
           </div>
         </div>
       </section>
