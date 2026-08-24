@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { InvestmentOpportunity } from '../types';
-import { generateInvestmentPDF } from '../utils/pdfGenerator';
 import { 
   Briefcase, 
   FileDown, 
@@ -17,6 +16,11 @@ import {
   Send,
   ExternalLink
 } from 'lucide-react';
+
+async function downloadInvestmentStudy(investment: InvestmentOpportunity, language: import('../types').Language) {
+  const { generateInvestmentPDF } = await import('../utils/pdfGenerator');
+  await generateInvestmentPDF(investment, language === 'ar' ? 'ar' : language === 'fr' ? 'fr' : 'en');
+}
 
 export const InvestmentSection: React.FC = () => {
   const { language, t, investments } = useApp();
@@ -190,7 +194,7 @@ export const InvestmentSection: React.FC = () => {
                 {/* PDF Download Button */}
                 <div className="p-6 pt-0">
                   <button
-                    onClick={() => generateInvestmentPDF(invest, language === 'ar' ? 'ar' : language === 'fr' ? 'fr' : 'en')}
+                    onClick={() => void downloadInvestmentStudy(invest, language)}
                     className="w-full bg-[#0F1E36] hover:bg-[#1E3A5F] text-white text-xs sm:text-sm font-bold py-3 rounded-2xl transition flex items-center justify-center gap-2 shadow-sm"
                   >
                     <FileDown className="w-4 h-4 text-[#C89D66]" />

@@ -1,25 +1,35 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  Language, 
-  SiteCategory, 
-  TouristSite, 
-  TourismEvent, 
-  MasterArtisan, 
-  InvestmentOpportunity, 
-  DigitalRequest, 
-  NewsArticle 
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { supabase } from '../lib/supabase';
+import {
+  deleteContent,
+  fetchPublicCollections,
+  fetchStaffCollections,
+  getStaffProfile,
+  insertArtisan,
+  insertEvent,
+  insertNews,
+  insertSite,
+  StaffProfile,
+  subscribeToRealtime,
+  submitPublicRequest,
+  trackPublicRequest,
+  updateRequest,
+} from '../lib/supabaseData';
+import {
+  DigitalRequest,
+  InvestmentOpportunity,
+  Language,
+  MasterArtisan,
+  NewsArticle,
+  SiteCategory,
+  TouristSite,
+  TourismEvent,
 } from '../types';
 import { translations } from '../i18n/translations';
-import { 
-  INITIAL_SITES, 
-  INITIAL_EVENTS, 
-  INITIAL_ARTISANS, 
-  INITIAL_INVESTMENTS, 
-  INITIAL_NEWS, 
-  INITIAL_REQUESTS 
-} from '../data/initialData';
 
-export type NavTab = 'home' | 'map' | 'investment' | 'services' | 'events' | 'handicrafts' | 'news' | 'admin';
+export type NavTab = 'home' | 'map' | 'investment' | 'services' | 'artisan' | 'events' | 'news' | 'admin';
+
+type LoginResult = { ok: boolean; error?: string };
 
 interface AppContextType {
   language: Language;
@@ -34,239 +44,204 @@ interface AppContextType {
   setSelectedCategory: (cat: SiteCategory | 'all') => void;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
-  
-  // Accessibility
   textSize: 'normal' | 'large' | 'xl';
   setTextSize: (size: 'normal' | 'large' | 'xl') => void;
   highContrast: boolean;
   setHighContrast: (val: boolean) => void;
-
-  // Data Collections
+  loading: boolean;
+  dataError: string | null;
   sites: TouristSite[];
-  addSite: (site: TouristSite) => void;
-  updateSite: (site: TouristSite) => void;
-  deleteSite: (id: string) => void;
-
+  addSite: (site: TouristSite) => Promise<void>;
+  updateSite: (site: TouristSite) => Promise<void>;
+  deleteSite: (id: string) => Promise<void>;
   events: TourismEvent[];
-  addEvent: (event: TourismEvent) => void;
-  updateEvent: (event: TourismEvent) => void;
-  deleteEvent: (id: string) => void;
-
+  addEvent: (event: TourismEvent) => Promise<void>;
+  updateEvent: (event: TourismEvent) => Promise<void>;
+  deleteEvent: (id: string) => Promise<void>;
   artisans: MasterArtisan[];
-  addArtisan: (artisan: MasterArtisan) => void;
-  updateArtisan: (artisan: MasterArtisan) => void;
-  deleteArtisan: (id: string) => void;
-
+  addArtisan: (artisan: MasterArtisan) => Promise<void>;
+  updateArtisan: (artisan: MasterArtisan) => Promise<void>;
+  deleteArtisan: (id: string) => Promise<void>;
   investments: InvestmentOpportunity[];
-
   news: NewsArticle[];
-  addNews: (article: NewsArticle) => void;
-  deleteNews: (id: string) => void;
-
+  addNews: (article: NewsArticle) => Promise<void>;
+  deleteNews: (id: string) => Promise<void>;
   requests: DigitalRequest[];
-  submitRequest: (data: Omit<DigitalRequest, 'id' | 'trackingNumber' | 'status' | 'createdAt'>) => string;
-  updateRequestStatus: (id: string, status: DigitalRequest['status'], responseNotes?: string, department?: string) => void;
-
-  // Admin Auth
+  submitRequest: (data: Omit<DigitalRequest, 'id' | 'trackingNumber' | 'status' | 'createdAt' | 'updatedAt' | 'adminResponse' | 'departmentAssigned'>) => Promise<DigitalRequest>;
+  trackRequest: (trackingNumber: string) => Promise<DigitalRequest | null>;
+  updateRequestStatus: (id: string, status: DigitalRequest['status'], responseNotes?: string, department?: string) => Promise<void>;
   isAdmin: boolean;
-  loginAdmin: (password: string) => boolean;
-  logoutAdmin: () => void;
+  staffProfile: StaffProfile | null;
+  userEmail: string | null;
+  loginAdmin: (email: string, password: string) => Promise<LoginResult>;
+  logoutAdmin: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>(() => {
-    return (localStorage.getItem('eloued_lang') as Language) || 'ar';
-  });
-  
+  const [language, setLanguageState] = useState<Language>(() => (localStorage.getItem('eloued_lang') as Language) || 'ar');
   const [activeTab, setActiveTab] = useState<NavTab>('home');
   const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<SiteCategory | 'all'>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  
   const [textSize, setTextSize] = useState<'normal' | 'large' | 'xl'>('normal');
-  const [highContrast, setHighContrast] = useState<boolean>(false);
+  const [highContrast, setHighContrast] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [dataError, setDataError] = useState<string | null>(null);
+  const [sites, setSites] = useState<TouristSite[]>([]);
+  const [events, setEvents] = useState<TourismEvent[]>([]);
+  const [artisans, setArtisans] = useState<MasterArtisan[]>([]);
+  const [investments, setInvestments] = useState<InvestmentOpportunity[]>([]);
+  const [news, setNews] = useState<NewsArticle[]>([]);
+  const [requests, setRequests] = useState<DigitalRequest[]>([]);
+  const [staffProfile, setStaffProfile] = useState<StaffProfile | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const mounted = useRef(true);
 
-  // Persistent / dynamic collections
-  const [sites, setSites] = useState<TouristSite[]>(() => {
-    const saved = localStorage.getItem('eloued_sites');
-    return saved ? JSON.parse(saved) : INITIAL_SITES;
-  });
+  const applyPublicCollections = useCallback((collections: Awaited<ReturnType<typeof fetchPublicCollections>>) => {
+    if (!mounted.current) return;
+    setSites(collections.sites);
+    setEvents(collections.events);
+    setArtisans(collections.artisans);
+    setInvestments(collections.investments);
+    setNews(collections.news);
+  }, []);
 
-  const [events, setEvents] = useState<TourismEvent[]>(() => {
-    const saved = localStorage.getItem('eloued_events');
-    return saved ? JSON.parse(saved) : INITIAL_EVENTS;
-  });
+  const refreshData = useCallback(async (withRequests: boolean) => {
+    try {
+      setDataError(null);
+      if (withRequests) {
+        const collections = await fetchStaffCollections();
+        if (!mounted.current) return;
+        applyPublicCollections(collections);
+        setRequests(collections.requests);
+      } else {
+        const collections = await fetchPublicCollections();
+        applyPublicCollections(collections);
+        if (mounted.current) setRequests([]);
+      }
+    } catch (error) {
+      if (mounted.current) setDataError(error instanceof Error ? error.message : 'Impossible de charger les données.');
+    } finally {
+      if (mounted.current) setLoading(false);
+    }
+  }, [applyPublicCollections]);
 
-  const [artisans, setArtisans] = useState<MasterArtisan[]>(() => {
-    const saved = localStorage.getItem('eloued_artisans');
-    return saved ? JSON.parse(saved) : INITIAL_ARTISANS;
-  });
+  const loadUserState = useCallback(async (userId: string | null, email: string | null) => {
+    setUserEmail(email);
+    if (!userId) {
+      setStaffProfile(null);
+      setIsAdmin(false);
+      await refreshData(false);
+      return;
+    }
+    try {
+      const profile = await getStaffProfile(userId);
+      const staff = profile?.role === 'admin' || profile?.role === 'editor';
+      setStaffProfile(profile);
+      setIsAdmin(staff);
+      await refreshData(staff);
+    } catch (error) {
+      setStaffProfile(null);
+      setIsAdmin(false);
+      setDataError(error instanceof Error ? error.message : 'Impossible de vérifier les droits.');
+      await refreshData(false);
+    }
+  }, [refreshData]);
 
-  const [investments] = useState<InvestmentOpportunity[]>(INITIAL_INVESTMENTS);
-
-  const [news, setNews] = useState<NewsArticle[]>(() => {
-    const saved = localStorage.getItem('eloued_news');
-    return saved ? JSON.parse(saved) : INITIAL_NEWS;
-  });
-
-  const [requests, setRequests] = useState<DigitalRequest[]>(() => {
-    const saved = localStorage.getItem('eloued_requests');
-    return saved ? JSON.parse(saved) : INITIAL_REQUESTS;
-  });
-
-  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
-    return localStorage.getItem('eloued_is_admin') === 'true';
-  });
-
-  // Sync to localStorage
   useEffect(() => {
-    localStorage.setItem('eloued_sites', JSON.stringify(sites));
-  }, [sites]);
+    mounted.current = true;
+    void supabase.auth.getSession().then(({ data: { session } }) => loadUserState(session?.user.id ?? null, session?.user.email ?? null));
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      void loadUserState(session?.user.id ?? null, session?.user.email ?? null);
+    });
+    return () => {
+      mounted.current = false;
+      listener.subscription.unsubscribe();
+    };
+  }, [loadUserState]);
 
-  useEffect(() => {
-    localStorage.setItem('eloued_events', JSON.stringify(events));
-  }, [events]);
-
-  useEffect(() => {
-    localStorage.setItem('eloued_artisans', JSON.stringify(artisans));
-  }, [artisans]);
-
-  useEffect(() => {
-    localStorage.setItem('eloued_news', JSON.stringify(news));
-  }, [news]);
-
-  useEffect(() => {
-    localStorage.setItem('eloued_requests', JSON.stringify(requests));
-  }, [requests]);
-
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
-    localStorage.setItem('eloued_lang', lang);
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  };
+  useEffect(() => subscribeToRealtime(() => void refreshData(isAdmin)), [isAdmin, refreshData]);
 
   useEffect(() => {
     document.documentElement.lang = language;
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
   }, [language]);
 
-  // Handlers
-  const addSite = (site: TouristSite) => setSites(prev => [site, ...prev]);
-  const updateSite = (site: TouristSite) => setSites(prev => prev.map(s => s.id === site.id ? site : s));
-  const deleteSite = (id: string) => setSites(prev => prev.filter(s => s.id !== id));
-
-  const addEvent = (event: TourismEvent) => setEvents(prev => [event, ...prev]);
-  const updateEvent = (event: TourismEvent) => setEvents(prev => prev.map(e => e.id === event.id ? event : e));
-  const deleteEvent = (id: string) => setEvents(prev => prev.filter(e => e.id !== id));
-
-  const addArtisan = (artisan: MasterArtisan) => setArtisans(prev => [artisan, ...prev]);
-  const updateArtisan = (artisan: MasterArtisan) => setArtisans(prev => prev.map(a => a.id === artisan.id ? artisan : a));
-  const deleteArtisan = (id: string) => setArtisans(prev => prev.filter(a => a.id !== id));
-
-  const addNews = (article: NewsArticle) => setNews(prev => [article, ...prev]);
-  const deleteNews = (id: string) => setNews(prev => prev.filter(n => n.id !== id));
-
-  const submitRequest = (data: Omit<DigitalRequest, 'id' | 'trackingNumber' | 'status' | 'createdAt'>) => {
-    const randomCode = Math.floor(1000 + Math.random() * 9000);
-    const trackingNumber = `ELO-2026-${randomCode}`;
-    const newReq: DigitalRequest = {
-      ...data,
-      id: `req-${Date.now()}`,
-      trackingNumber,
-      status: 'submitted',
-      createdAt: new Date().toISOString(),
-    };
-    setRequests(prev => [newReq, ...prev]);
-    return trackingNumber;
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem('eloued_lang', lang);
   };
 
-  const updateRequestStatus = (id: string, status: DigitalRequest['status'], responseNotes?: string, department?: string) => {
-    setRequests(prev => prev.map(r => {
-      if (r.id === id) {
-        return {
-          ...r,
-          status,
-          updatedAt: new Date().toISOString(),
-          adminResponse: responseNotes !== undefined ? responseNotes : r.adminResponse,
-          departmentAssigned: department !== undefined ? department : r.departmentAssigned,
-        };
-      }
-      return r;
-    }));
+  const addSite = async (site: TouristSite) => { await insertSite(site); setSites((current) => [site, ...current]); };
+  const updateSite = async (site: TouristSite) => { await insertSite(site); setSites((current) => current.map((item) => item.id === site.id ? site : item)); };
+  const deleteSite = async (id: string) => { await deleteContent('sites', id); setSites((current) => current.filter((item) => item.id !== id)); };
+  const addEvent = async (event: TourismEvent) => { await insertEvent(event); setEvents((current) => [event, ...current]); };
+  const updateEvent = async (event: TourismEvent) => { await insertEvent(event); setEvents((current) => current.map((item) => item.id === event.id ? event : item)); };
+  const deleteEvent = async (id: string) => { await deleteContent('events', id); setEvents((current) => current.filter((item) => item.id !== id)); };
+  const addArtisan = async (artisan: MasterArtisan) => { await insertArtisan(artisan); setArtisans((current) => [artisan, ...current]); };
+  const updateArtisan = async (artisan: MasterArtisan) => { await insertArtisan(artisan); setArtisans((current) => current.map((item) => item.id === artisan.id ? artisan : item)); };
+  const deleteArtisan = async (id: string) => { await deleteContent('artisans', id); setArtisans((current) => current.filter((item) => item.id !== id)); };
+  const addNews = async (article: NewsArticle) => { await insertNews(article); setNews((current) => [article, ...current]); };
+  const deleteNews = async (id: string) => { await deleteContent('news', id); setNews((current) => current.filter((item) => item.id !== id)); };
+
+  const submitRequest = async (data: Omit<DigitalRequest, 'id' | 'trackingNumber' | 'status' | 'createdAt' | 'updatedAt' | 'adminResponse' | 'departmentAssigned'>) => {
+    const request = await submitPublicRequest(data);
+    if (isAdmin) setRequests((current) => [request, ...current]);
+    return request;
   };
 
-  const loginAdmin = (password: string) => {
-    if (password === 'admin' || password === 'eloued2026' || password === 'tourisme39') {
-      setIsAdmin(true);
-      localStorage.setItem('eloued_is_admin', 'true');
-      return true;
+  const trackRequest = async (trackingNumber: string) => trackPublicRequest(trackingNumber);
+
+  const updateRequestStatus = async (id: string, status: DigitalRequest['status'], responseNotes?: string, department?: string) => {
+    await updateRequest(id, status, responseNotes, department);
+    setRequests((current) => current.map((request) => request.id === id ? {
+      ...request,
+      status,
+      updatedAt: new Date().toISOString(),
+      adminResponse: responseNotes ?? request.adminResponse,
+      departmentAssigned: department ?? request.departmentAssigned,
+    } : request));
+  };
+
+  const loginAdmin = async (email: string, password: string): Promise<LoginResult> => {
+    const result = await supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
+    if (result.error || !result.data.user) return { ok: false, error: result.error?.message || 'Identifiants invalides.' };
+    const profile = await getStaffProfile(result.data.user.id);
+    if (!profile || (profile.role !== 'admin' && profile.role !== 'editor')) {
+      await supabase.auth.signOut();
+      return { ok: false, error: 'Ce compte n’est pas autorisé à accéder à l’administration.' };
     }
-    return false;
+    setStaffProfile(profile);
+    setIsAdmin(true);
+    setUserEmail(result.data.user.email ?? null);
+    await refreshData(true);
+    return { ok: true };
   };
 
-  const logoutAdmin = () => {
+  const logoutAdmin = async () => {
+    await supabase.auth.signOut();
+    setStaffProfile(null);
     setIsAdmin(false);
-    localStorage.removeItem('eloued_is_admin');
+    setRequests([]);
   };
 
   const t = translations[language] || translations.ar;
   const isRTL = language === 'ar';
+  const value = useMemo(() => ({
+    language, setLanguage, t, isRTL, activeTab, setActiveTab, selectedSiteId, setSelectedSiteId, selectedCategory, setSelectedCategory,
+    searchTerm, setSearchTerm, textSize, setTextSize, highContrast, setHighContrast, loading, dataError, sites, addSite, updateSite,
+    deleteSite, events, addEvent, updateEvent, deleteEvent, artisans, addArtisan, updateArtisan, deleteArtisan, investments, news,
+    addNews, deleteNews, requests, submitRequest, trackRequest, updateRequestStatus, isAdmin, staffProfile, userEmail, loginAdmin, logoutAdmin,
+  }), [language, t, isRTL, activeTab, selectedSiteId, selectedCategory, searchTerm, textSize, highContrast, loading, dataError, sites, events, artisans, investments, news, requests, isAdmin, staffProfile, userEmail]);
 
-  return (
-    <AppContext.Provider
-      value={{
-        language,
-        setLanguage,
-        t,
-        isRTL,
-        activeTab,
-        setActiveTab,
-        selectedSiteId,
-        setSelectedSiteId,
-        selectedCategory,
-        setSelectedCategory,
-        searchTerm,
-        setSearchTerm,
-        textSize,
-        setTextSize,
-        highContrast,
-        setHighContrast,
-        sites,
-        addSite,
-        updateSite,
-        deleteSite,
-        events,
-        addEvent,
-        updateEvent,
-        deleteEvent,
-        artisans,
-        addArtisan,
-        updateArtisan,
-        deleteArtisan,
-        investments,
-        news,
-        addNews,
-        deleteNews,
-        requests,
-        submitRequest,
-        updateRequestStatus,
-        isAdmin,
-        loginAdmin,
-        logoutAdmin,
-      }}
-    >
-      {children}
-    </AppContext.Provider>
-  );
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
 export const useApp = () => {
   const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useApp must be used within an AppProvider');
-  }
+  if (!context) throw new Error('useApp must be used within an AppProvider');
   return context;
 };

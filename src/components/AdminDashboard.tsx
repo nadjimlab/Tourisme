@@ -29,6 +29,7 @@ export const AdminDashboard: React.FC = () => {
     t, 
     isAdmin, 
     loginAdmin, 
+    userEmail,
     logoutAdmin, 
     sites, 
     addSite, 
@@ -46,6 +47,7 @@ export const AdminDashboard: React.FC = () => {
     deleteNews 
   } = useApp();
 
+  const [emailInput, setEmailInput] = useState(userEmail || '');
   const [passwordInput, setPasswordInput] = useState('');
   const [loginError, setLoginError] = useState(false);
   const [adminTab, setAdminTab] = useState<'overview' | 'sites' | 'complaints' | 'events' | 'artisans' | 'news'>('overview');
@@ -75,18 +77,14 @@ export const AdminDashboard: React.FC = () => {
   const [assignedDept, setAssignedDept] = useState('مصلحة الترقية والتهيئة السياحية');
   const [newStatus, setNewStatus] = useState<DigitalRequest['status']>('resolved');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = loginAdmin(passwordInput);
-    if (!ok) {
-      setLoginError(true);
-    } else {
-      setLoginError(false);
-      setPasswordInput('');
-    }
+    const result = await loginAdmin(emailInput, passwordInput);
+    setLoginError(!result.ok);
+    if (result.ok) setPasswordInput('');
   };
 
-  const handleCreateSite = (e: React.FormEvent) => {
+  const handleCreateSite = async (e: React.FormEvent) => {
     e.preventDefault();
     const siteObj: TouristSite = {
       id: `site-${Date.now()}`,
@@ -137,8 +135,13 @@ export const AdminDashboard: React.FC = () => {
       reviewsCount: 1,
     };
 
-    addSite(siteObj);
-    alert(language === 'ar' ? 'تم إضافة المعلم السياحي بنجاح وتحديث الخريطة التفاعلية!' : 'Site added successfully!');
+    try {
+      await addSite(siteObj);
+      alert(language === 'ar' ? 'تم إضافة المعلم السياحي بنجاح وتحديث الخريطة التفاعلية!' : 'Site added successfully!');
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Unable to save the site.');
+      return;
+    }
     setNewSite({
       nameAr: '',
       nameFr: '',
@@ -158,13 +161,17 @@ export const AdminDashboard: React.FC = () => {
     });
   };
 
-  const handleUpdateComplaint = (e: React.FormEvent) => {
+  const handleUpdateComplaint = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!respondingToReq) return;
-    updateRequestStatus(respondingToReq.id, newStatus, responseNotes, assignedDept);
-    setRespondingToReq(null);
-    setResponseNotes('');
-    alert(language === 'ar' ? 'تم تحديث حالة الشكوى وإرسال الرد الإداري بنجاح!' : 'Complaint updated successfully!');
+    try {
+      await updateRequestStatus(respondingToReq.id, newStatus, responseNotes, assignedDept);
+      setRespondingToReq(null);
+      setResponseNotes('');
+      alert(language === 'ar' ? 'تم تحديث حالة الشكوى وإرسال الرد الإداري بنجاح!' : 'Complaint updated successfully!');
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Unable to update the request.');
+    }
   };
 
   const exportFullDossier = () => {
@@ -211,10 +218,13 @@ export const AdminDashboard: React.FC = () => {
                 {t.admin.username}
               </label>
               <input
-                type="text"
-                defaultValue="admin@tourisme-eloued.dz"
-                disabled
-                className="w-full bg-[#FAF7F2] border border-[#D5C6B4] rounded-xl py-2 px-3 text-xs text-slate-600 font-mono"
+                type="email"
+                required
+                autoComplete="username"
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
+                placeholder="administration@tourisme-eloued.dz"
+                className="w-full bg-white border border-[#D5C6B4] rounded-xl py-2 px-3 text-xs text-slate-800 font-mono focus:ring-2 focus:ring-[#C89D66] focus:outline-hidden"
               />
             </div>
 
@@ -225,6 +235,7 @@ export const AdminDashboard: React.FC = () => {
               <input
                 type="password"
                 required
+                autoComplete="current-password"
                 placeholder="••••••••"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
@@ -235,7 +246,7 @@ export const AdminDashboard: React.FC = () => {
             {loginError && (
               <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                <span>{language === 'ar' ? 'كلمة المرور غير صحيحة. يمكنك استخدام زر الدخول التجريبي أدناه.' : 'Invalid password. You can use the Demo login button.'}</span>
+                <span>{language === 'ar' ? 'تعذر تسجيل الدخول. تحقق من البريد الإلكتروني وكلمة المرور أو من صلاحية حسابك الإداري.' : 'Sign-in failed. Check your email, password, and administrative access.'}</span>
               </div>
             )}
 
@@ -248,15 +259,6 @@ export const AdminDashboard: React.FC = () => {
             </button>
           </form>
 
-          {/* Quick Demo Bypass */}
-          <div className="pt-3 border-t border-slate-100 text-center">
-            <button
-              onClick={() => loginAdmin('admin')}
-              className="text-xs text-[#0C6B58] hover:text-[#095243] font-bold underline"
-            >
-              {t.admin.demoLogin}
-            </button>
-          </div>
         </div>
       </div>
     );

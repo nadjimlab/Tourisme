@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { SiteCategory, TouristSite } from '../types';
-import { generateSitePDF } from '../utils/pdfGenerator';
 import { 
   MapPin, 
   Layers, 
@@ -20,6 +19,11 @@ import {
   Share2
 } from 'lucide-react';
 import L from 'leaflet';
+
+async function downloadSiteBrochure(site: TouristSite, language: import('../types').Language) {
+  const { generateSitePDF } = await import('../utils/pdfGenerator');
+  await generateSitePDF(site, language);
+}
 
 export const InteractiveMap: React.FC = () => {
   const { 
@@ -413,7 +417,7 @@ export const InteractiveMap: React.FC = () => {
                         </button>
 
                         <button
-                          onClick={() => generateSitePDF(site, language)}
+                          onClick={() => void downloadSiteBrochure(site, language)}
                           className="w-full bg-[#F4EDE4] hover:bg-[#EAE0D3] text-[#0F1E36] text-xs font-bold py-2 rounded-xl transition flex items-center justify-center gap-1.5 border border-[#D5C6B4]"
                           title={t.map.downloadBrochure}
                         >
@@ -552,7 +556,7 @@ export const InteractiveMap: React.FC = () => {
                 </div>
 
                 <button
-                  onClick={() => generateSitePDF(activeSiteModal, language)}
+                  onClick={() => void downloadSiteBrochure(activeSiteModal, language)}
                   className="bg-[#C89D66] hover:bg-[#B38752] text-[#0F1E36] text-xs font-bold px-5 py-2.5 rounded-xl transition flex items-center gap-2 shadow-md"
                 >
                   <FileDown className="w-4 h-4" />

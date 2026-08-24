@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { ServiceType, DigitalRequest } from '../types';
-import { generateFilingReceiptPDF } from '../utils/pdfGenerator';
 import { 
   FileText, 
   Search, 
@@ -20,8 +19,13 @@ import {
   ArrowLeft
 } from 'lucide-react';
 
+async function downloadReceipt(request: DigitalRequest) {
+  const { generateFilingReceiptPDF } = await import('../utils/pdfGenerator');
+  await generateFilingReceiptPDF(request);
+}
+
 export const DigitalServices: React.FC = () => {
-  const { language, t, isRTL, requests, submitRequest } = useApp();
+  const { language, t, isRTL, submitRequest, trackRequest } = useApp();
 
   const [activeSubTab, setActiveSubTab] = useState<'complaint' | 'track' | 'forms'>('complaint');
 
@@ -42,41 +46,33 @@ export const DigitalServices: React.FC = () => {
   // Tracking State
   const [trackInput, setTrackInput] = useState('');
   const [trackedResult, setTrackedResult] = useState<DigitalRequest | null | 'not_found'>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [requestError, setRequestError] = useState<string | null>(null);
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trackingCode = submitRequest(formData);
-    setGeneratedCode(trackingCode);
-    
-    // Construct local request object for instant receipt download
-    const fullReq: DigitalRequest = {
-      id: `req-${Date.now()}`,
-      trackingNumber: trackingCode,
-      ...formData,
-      status: 'submitted',
-      createdAt: new Date().toISOString(),
-    };
-    setLastSubmittedReq(fullReq);
-
-    // Reset inputs
-    setFormData({
-      serviceType: 'complaint',
-      fullName: '',
-      nationalIdOrPassport: '',
-      email: '',
-      phone: '',
-      subject: '',
-      details: '',
-    });
+    setIsSubmitting(true);
+    setRequestError(null);
+    try {
+      const savedRequest = await submitRequest(formData);
+      setGeneratedCode(savedRequest.trackingNumber);
+      setLastSubmittedReq(savedRequest);
+      setFormData({ serviceType: 'complaint', fullName: '', nationalIdOrPassport: '', email: '', phone: '', subject: '', details: '' });
+    } catch (error) {
+      setRequestError(error instanceof Error ? error.message : 'La demande n’a pas pu être envoyée.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleTrackSubmit = (e: React.FormEvent) => {
+  const handleTrackSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanCode = trackInput.trim().toUpperCase();
-    const match = requests.find(r => r.trackingNumber.toUpperCase() === cleanCode);
-    if (match) {
-      setTrackedResult(match);
-    } else {
+    setRequestError(null);
+    try {
+      const match = await trackRequest(trackInput.trim().toUpperCase());
+      setTrackedResult(match || 'not_found');
+    } catch (error) {
+      setRequestError(error instanceof Error ? error.message : 'Le suivi est temporairement indisponible.');
       setTrackedResult('not_found');
     }
   };
@@ -211,7 +207,7 @@ export const DigitalServices: React.FC = () => {
                 <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
                   {lastSubmittedReq && (
                     <button
-                      onClick={() => generateFilingReceiptPDF(lastSubmittedReq)}
+                      onClick={() => void downloadReceipt(lastSubmittedReq)}
                       className="bg-[#0F1E36] hover:bg-[#1E3A5F] text-white text-xs sm:text-sm font-bold px-6 py-3 rounded-xl transition flex items-center gap-2 shadow-md"
                     >
                       <FileDown className="w-4 h-4 text-[#C89D66]" />
@@ -239,6 +235,13 @@ export const DigitalServices: React.FC = () => {
                 </div>
               </div>
             ) : (
+              <>
+              {requestError && (
+                <div className="mb-4 p-4 bg-rose-50 border border-rose-200 rounded-2xl text-center text-rose-800 text-xs">
+                  <AlertCircle className="w-5 h-5 text-rose-600 mx-auto mb-1" />
+                  <p>{requestError}</p>
+                </div>
+              )}
               <form onSubmit={handleFormSubmit} className="space-y-6">
                 
                 {/* Service Type Selection */}
@@ -349,7 +352,8 @@ export const DigitalServices: React.FC = () => {
                 <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full bg-[#0C6B58] hover:bg-[#095243] text-white text-sm font-bold py-3.5 rounded-2xl transition flex items-center justify-center gap-2 shadow-md"
+                    disabled={isSubmitting}
+                    className="w-full bg-[#0C6B58] hover:bg-[#095243] disabled:opacity-60 disabled:cursor-wait text-white text-sm font-bold py-3.5 rounded-2xl transition flex items-center justify-center gap-2 shadow-md"
                   >
                     <Send className="w-4 h-4" />
                     <span>{t.services.form.submit}</span>
@@ -357,6 +361,7 @@ export const DigitalServices: React.FC = () => {
                 </div>
 
               </form>
+              </>
             )}
 
           </div>
@@ -391,7 +396,14 @@ export const DigitalServices: React.FC = () => {
             </form>
 
             {/* Tracking Result View */}
-            {trackedResult === 'not_found' && (
+            {requestError && (
+              <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-center text-rose-800 text-xs">
+                <AlertCircle className="w-5 h-5 text-rose-600 mx-auto mb-1" />
+                <p>{requestError}</p>
+              </div>
+            )}
+
+            {trackedResult === 'not_found' && !requestError && (
               <div className="p-6 bg-rose-50 border border-rose-200 rounded-2xl text-center text-rose-800 text-xs space-y-1">
                 <AlertCircle className="w-6 h-6 text-rose-600 mx-auto" />
                 <p className="font-bold">{language === 'ar' ? 'رقم التتبع غير موجود بالمنظومة' : 'Tracking Number not found'}</p>
@@ -414,7 +426,7 @@ export const DigitalServices: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                   <div>
                     <span className="text-slate-500 block font-bold">{t.services.form.fullName}:</span>
-                    <span className="text-slate-800 font-semibold">{trackedResult.fullName}</span>
+                    <span className="text-slate-800 font-semibold">{trackedResult.fullName || '—'}</span>
                   </div>
                   <div>
                     <span className="text-slate-500 block font-bold">{language === 'ar' ? 'تاريخ التسجيل' : 'Submission Date'}:</span>
@@ -449,7 +461,7 @@ export const DigitalServices: React.FC = () => {
 
                 <div className="pt-2 flex justify-end">
                   <button
-                    onClick={() => generateFilingReceiptPDF(trackedResult)}
+                    onClick={() => void downloadReceipt(trackedResult)}
                     className="bg-[#0F1E36] hover:bg-[#1E3A5F] text-white text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 shadow-xs"
                   >
                     <FileDown className="w-3.5 h-3.5 text-[#C89D66]" />

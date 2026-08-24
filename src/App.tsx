@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 
 const MainLayout: React.FC = () => {
-  const { activeTab, setActiveTab, language, isRTL, t } = useApp();
+  const { activeTab, setActiveTab, language, isRTL, t, loading, dataError } = useApp();
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -45,6 +45,17 @@ const MainLayout: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-[#FAF7F2] text-slate-900 selection:bg-[#C89D66]/30 selection:text-[#0F1E36]">
       {/* Official Government Top Navigation Bar */}
       <Navbar />
+
+      {dataError && (
+        <div role="status" className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-center text-xs text-amber-900">
+          {language === 'ar' ? 'تعذر تحميل بعض البيانات الرسمية حالياً. يرجى المحاولة لاحقاً.' : language === 'fr' ? 'Certaines données officielles sont momentanément indisponibles. Veuillez réessayer.' : 'Some official data is temporarily unavailable. Please try again.'}
+        </div>
+      )}
+      {loading && (
+        <div role="status" className="h-1 w-full overflow-hidden bg-[#E8DCCD]">
+          <div className="h-full w-1/3 animate-pulse bg-[#C89D66]" />
+        </div>
+      )}
 
       {/* Main Content Router */}
       <main className="flex-1">
