@@ -1,7 +1,5 @@
 import React from 'react';
 import {
-  ArrowLeft,
-  ArrowRight,
   BellRing,
   ExternalLink,
   FileText,
@@ -20,8 +18,6 @@ const copy = {
     eyebrow: 'معلومة رسمية من المديرية',
     title: 'الصفحة الرسمية لمديرية السياحة والصناعة التقليدية لولاية الوادي',
     intro: 'فضاء مؤسسي للتعريف بالمديرية، بولاية الوادي وتراثها السياحي، وبالخدمات والمعلومات المنشورة من المصالح المختصة.',
-    sourceLabel: 'المصدر الرسمي',
-    sourceText: 'تم إعداد هذا الملخص اعتماداً على المعلومات المنشورة في البوابة الرسمية للمديرية.',
     aboutTitle: 'عن ولاية الوادي',
     aboutText: 'تتميز ولاية الوادي بطابعها العمراني وتراثها المتنوع، وبموقعها في الصحراء الوسطى. وتضم مواقع طبيعية، مساجد وزوايا، أسواقاً شعبية ومدناً عتيقة، إضافة إلى غيطان النخيل المحاطة بالكثبان الرملية للعرق الشرقي الكبير.',
     heritageText: 'ويشمل تراث المنطقة الصناعات التقليدية والعادات والتقاليد واللباس التقليدي وفنون الطهي والفولكلور، مما يجعلها وجهة للسياحة الصحراوية والثقافية والبيئية.',
@@ -43,19 +39,13 @@ const copy = {
     phone: 'الهاتف',
     fax: 'الفاكس',
     email: 'البريد الإلكتروني',
-    sourceCta: 'زيارة الموقع الرسمي',
-    verified: 'معلومات مستخرجة من المصدر الحكومي',
     documentsTitle: 'الوثائق والتحميلات',
     documentsText: 'سيتم نشر الاستمارات والوثائق الرسمية هنا بعد التحقق منها واعتمادها. لا يتم عرض ملفات غير موثقة.',
-    contactCta: 'التواصل مع المديرية',
-    documentsCta: 'فتح صفحة التحميل الرسمية',
   },
   fr: {
     eyebrow: 'Information officielle de la Direction',
     title: 'Portail officiel de la Direction du Tourisme et de l’Artisanat de la wilaya d’El Oued',
     intro: 'Un espace institutionnel consacré à la Direction, à la wilaya d’El Oued et à son patrimoine touristique, ainsi qu’aux services et informations publiés par les services compétents.',
-    sourceLabel: 'Source officielle',
-    sourceText: 'Ce résumé est établi à partir des informations publiées sur le portail officiel de la Direction.',
     aboutTitle: 'À propos de la wilaya d’El Oued',
     aboutText: 'La wilaya d’El Oued se distingue par son caractère urbain et la richesse de son patrimoine, ainsi que par sa situation dans le désert central. Elle comprend des sites naturels, des mosquées et zaouïas, des marchés populaires et des villes anciennes, ainsi que des ghout de palmiers entourés par les dunes du Grand Erg Oriental.',
     heritageText: 'Le patrimoine local comprend également les métiers traditionnels, les coutumes, le costume traditionnel, la gastronomie et le folklore, faisant de la région une destination de tourisme saharien, culturel et environnemental.',
@@ -77,19 +67,13 @@ const copy = {
     phone: 'Téléphone',
     fax: 'Fax',
     email: 'Courriel',
-    sourceCta: 'Visiter le site officiel',
-    verified: 'Informations relevées sur la source gouvernementale',
     documentsTitle: 'Documents et téléchargements',
     documentsText: 'Les formulaires et documents officiels seront publiés ici après vérification et validation. Aucun fichier non vérifié n’est présenté.',
-    contactCta: 'Contacter la Direction',
-    documentsCta: 'Ouvrir la page officielle de téléchargement',
   },
   en: {
     eyebrow: 'Official Directorate information',
     title: 'Official portal of the Directorate of Tourism and Handicrafts of El Oued Province',
     intro: 'An institutional space presenting the Directorate, El Oued Province and its tourism heritage, together with services and information published by the competent authorities.',
-    sourceLabel: 'Official source',
-    sourceText: 'This summary is based on information published on the Directorate’s official portal.',
     aboutTitle: 'About El Oued Province',
     aboutText: 'El Oued Province is known for its urban character and rich heritage, as well as its location in the central desert. It includes natural sites, mosques and zawiyas, popular markets and ancient towns, together with palm ghout surrounded by the dunes of the Great Eastern Erg.',
     heritageText: 'The local heritage also includes traditional crafts, customs, traditional dress, culinary arts and folklore, making the region a destination for Saharan, cultural and environmental tourism.',
@@ -111,12 +95,8 @@ const copy = {
     phone: 'Phone',
     fax: 'Fax',
     email: 'Email',
-    sourceCta: 'Visit official website',
-    verified: 'Information collected from the government source',
     documentsTitle: 'Documents and downloads',
     documentsText: 'Official forms and documents will be published here after verification and approval. No unverified files are displayed.',
-    contactCta: 'Contact the Directorate',
-    documentsCta: 'Open official downloads',
   },
 } as const;
 
@@ -150,7 +130,6 @@ export const OfficialPortal: React.FC = () => {
           <div className="mb-5 flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F4EDE4] text-[#B8874D]"><Landmark className="h-5 w-5" /></span><h2 id="official-about-title" className="font-heading text-2xl font-black text-[#17324D]">{current.aboutTitle}</h2></div>
           <p className="text-sm leading-7 text-slate-700">{current.aboutText}</p>
           <p className="mt-4 text-sm leading-7 text-slate-700">{current.heritageText}</p>
-          <div className="mt-6 rounded-2xl border-s-4 border-[#C89D66] bg-[#FAF7F2] p-4 text-xs leading-6 text-slate-600"><strong className="text-[#17324D]">{current.sourceLabel}: </strong>{current.sourceText}</div>
         </section>
 
         <section className="rounded-[1.6rem] bg-[#0C6B58] p-6 text-white shadow-sm sm:p-8" aria-labelledby="official-contact-title">
@@ -161,7 +140,6 @@ export const OfficialPortal: React.FC = () => {
             <div className="flex items-center gap-3"><Phone className="h-4 w-4 shrink-0 text-[#E5BB7C]" /><span><strong>{current.fax}:</strong> +213 32 12 24 99</span></div>
             <div className="flex items-center gap-3"><Mail className="h-4 w-4 shrink-0 text-[#E5BB7C]" /><a className="break-all underline decoration-white/40 underline-offset-4" href="mailto:dta.eloued@mta.gov.dz">dta.eloued@mta.gov.dz</a></div>
           </div>
-          <button onClick={() => openSection('contact')} className="mt-7 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-3 text-xs font-bold text-[#0C6B58] transition hover:bg-[#E5BB7C] hover:text-[#17324D] focus:outline-none focus:ring-2 focus:ring-white">{current.contactCta}{isRTL ? <ArrowLeft className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}</button>
         </section>
       </div>
 
@@ -179,10 +157,10 @@ export const OfficialPortal: React.FC = () => {
       <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-8 lg:grid-cols-2">
         <section className="rounded-[1.6rem] border border-[#E8DCCD] bg-white p-6 shadow-sm" aria-labelledby="official-news-title">
           <div className="flex items-start justify-between gap-4"><div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F4EDE4] text-[#B8874D]"><Newspaper className="h-5 w-5" /></span><div><h2 id="official-news-title" className="font-heading text-xl font-black text-[#17324D]">{current.newsTitle}</h2><p className="mt-1 text-xs text-slate-500">{news.length} {current.newsCount}</p></div></div><BellRing className="h-5 w-5 text-[#C89D66]" /></div>
-          {news.length === 0 ? <p className="mt-5 rounded-xl bg-[#FAF7F2] p-4 text-xs leading-6 text-slate-600">{current.newsEmpty}</p> : <button onClick={() => openSection('news')} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#17324D] px-4 py-3 text-xs font-bold text-white">{current.openNews}{isRTL ? <ArrowLeft className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}</button>}
+          <p className="mt-5 rounded-xl bg-[#FAF7F2] p-4 text-xs leading-6 text-slate-600">{news.length === 0 ? current.newsEmpty : current.openNews}</p>
         </section>
 
-        <section className="rounded-[1.6rem] border border-[#E8DCCD] bg-white p-6 shadow-sm" aria-labelledby="official-documents-title"><div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F4EDE4] text-[#0C6B58]"><FileText className="h-5 w-5" /></span><h2 id="official-documents-title" className="font-heading text-xl font-black text-[#17324D]">{current.documentsTitle}</h2></div><p className="mt-5 rounded-xl bg-[#FAF7F2] p-4 text-xs leading-6 text-slate-600">{current.documentsText}</p><a href="https://el-oued.mta.gov.dz/fr/telechargement/" target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex items-center gap-2 rounded-xl border border-[#17324D] px-4 py-3 text-xs font-bold text-[#17324D] transition hover:bg-[#17324D] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#C89D66]">{current.documentsCta}<ExternalLink className="h-4 w-4" /></a></section>
+        <section className="rounded-[1.6rem] border border-[#E8DCCD] bg-white p-6 shadow-sm" aria-labelledby="official-documents-title"><div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F4EDE4] text-[#0C6B58]"><FileText className="h-5 w-5" /></span><h2 id="official-documents-title" className="font-heading text-xl font-black text-[#17324D]">{current.documentsTitle}</h2></div><p className="mt-5 rounded-xl bg-[#FAF7F2] p-4 text-xs leading-6 text-slate-600">{current.documentsText}</p></section>
       </div>
     </div>
   );
