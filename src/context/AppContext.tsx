@@ -27,7 +27,7 @@ import {
 } from '../types';
 import { translations } from '../i18n/translations';
 
-export type NavTab = 'home' | 'map' | 'investment' | 'services' | 'artisan' | 'events' | 'news' | 'admin';
+export type NavTab = 'home' | 'map' | 'investment' | 'services' | 'artisan' | 'events' | 'news' | 'admin' | 'about' | 'contact' | 'privacy' | 'terms' | 'faq';
 
 type LoginResult = { ok: boolean; error?: string };
 
@@ -78,10 +78,15 @@ interface AppContextType {
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
+const navTabs: NavTab[] = ['home', 'map', 'investment', 'services', 'artisan', 'events', 'news', 'admin', 'about', 'contact', 'privacy', 'terms', 'faq'];
+const tabFromHash = (): NavTab => {
+  const hash = window.location.hash.replace(/^#/, '') as NavTab;
+  return navTabs.includes(hash) ? hash : 'home';
+};
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => (localStorage.getItem('eloued_lang') as Language) || 'ar');
-  const [activeTab, setActiveTab] = useState<NavTab>('home');
+  const [activeTab, setActiveTab] = useState<NavTab>(tabFromHash);
   const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<SiteCategory | 'all'>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -169,6 +174,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     document.documentElement.lang = language;
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
   }, [language]);
+
+  useEffect(() => {
+    const handleHashChange = () => setActiveTab(tabFromHash());
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  useEffect(() => {
+    const targetHash = activeTab === 'home' ? '' : `#${activeTab}`;
+    if (window.location.hash !== targetHash) window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}${targetHash}`);
+  }, [activeTab]);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);

@@ -25,7 +25,6 @@ export const translations = {
       hotline: 'الرقم الأخضر السياحي',
       hotlineNumber: '1077',
       wilayaOffice: 'مقر المديرية: حي الشط 08 ماي 1945، الوادي 39000',
-      weatherInElOued: 'الطقس بوادي سوف الآن',
       portalAccessibility: 'إمكانية الوصول',
       fontIncrease: 'تكبير الخط',
       fontReset: 'خط قياسي',
@@ -57,6 +56,9 @@ export const translations = {
       historical: 'تاريخية وقصور',
       cultural: 'ثقافية ومتاحف',
       handicrafts: 'حرف تقليدية وورشات',
+      accommodation: 'الإقامة والفنادق',
+      dining: 'المطاعم والمقاهي',
+      services: 'خدمات ومرافق',
     },
 
     // Interactive Map
@@ -204,7 +206,6 @@ export const translations = {
       username: 'اسم المستخدم أو البريد الوظيفي',
       password: 'كلمة المرور',
       loginBtn: 'تسجيل الدخول',
-      demoLogin: 'دخول تجريبي (مدير النظام)',
       logout: 'تسجيل الخروج',
       stats: {
         totalSites: 'إجمالي المعالم',
@@ -280,7 +281,6 @@ export const translations = {
       hotline: 'Numéro Vert Tourisme',
       hotlineNumber: '1077',
       wilayaOffice: 'Siège DTA: Cité Echatt 08 Mai 1945, El Oued 39000',
-      weatherInElOued: 'Météo à El Oued actuellement',
       portalAccessibility: 'Accessibilité',
       fontIncrease: 'Agrandir texte',
       fontReset: 'Taille normale',
@@ -310,6 +310,9 @@ export const translations = {
       historical: 'Historique & Ksours',
       cultural: 'Culturel & Musées',
       handicrafts: 'Artisanat & Ateliers',
+      accommodation: 'Hébergement & Hôtels',
+      dining: 'Restaurants & Cafés',
+      services: 'Services & Équipements',
     },
 
     map: {
@@ -450,7 +453,6 @@ export const translations = {
       username: 'Identifiant / Email professionnel',
       password: 'Mot de passe',
       loginBtn: 'Se connecter',
-      demoLogin: 'Accès Démonstration (Admin)',
       logout: 'Déconnexion',
       stats: {
         totalSites: 'Sites répertoriés',
@@ -525,7 +527,6 @@ export const translations = {
       hotline: 'Tourism Hotline',
       hotlineNumber: '1077',
       wilayaOffice: 'DTA Headquarters: Echatt District May 08, 1945, El Oued 39000',
-      weatherInElOued: 'Current weather in El Oued',
       portalAccessibility: 'Accessibility',
       fontIncrease: 'Larger Text',
       fontReset: 'Default Size',
@@ -555,6 +556,9 @@ export const translations = {
       historical: 'Historic & Ksours',
       cultural: 'Culture & Museums',
       handicrafts: 'Crafts & Workshops',
+      accommodation: 'Accommodation & Hotels',
+      dining: 'Restaurants & Cafés',
+      services: 'Services & Facilities',
     },
 
     map: {
@@ -695,7 +699,6 @@ export const translations = {
       username: 'Staff Username / Email',
       password: 'Password',
       loginBtn: 'Log In',
-      demoLogin: 'Quick Demo Login (Admin)',
       logout: 'Log Out',
       stats: {
         totalSites: 'Cataloged Sites',

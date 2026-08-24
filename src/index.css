@@ -1,11 +1,31 @@
 @import "tailwindcss";
 
+:root {
+  --portal-ink: #17324d;
+  --portal-deep: #0c2638;
+  --portal-green: #0c6b58;
+  --portal-sand: #b8874d;
+  --portal-sand-light: #f4e8d8;
+  --portal-paper: #f8f5ef;
+  --portal-line: #e7dccb;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
 @layer base {
   html {
     font-family: 'Cairo', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     scroll-behavior: smooth;
+    background: var(--portal-paper);
   }
-  
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    background: var(--portal-paper);
+    color: var(--portal-ink);
+    text-rendering: optimizeLegibility;
+  }
+
   [dir="ltr"] {
     font-family: 'Plus Jakarta Sans', 'Cairo', system-ui, sans-serif;
   }
@@ -21,46 +41,66 @@
   .font-arabic-serif {
     font-family: 'Amiri', serif;
   }
+
+  :focus-visible {
+    outline: 3px solid #e6c28e;
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: #e6c28e;
+    color: var(--portal-ink);
+  }
 }
 
-/* Custom scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #F4EDE4;
+  background: #f1e9dd;
 }
 ::-webkit-scrollbar-thumb {
-  background: #C89D66;
-  border-radius: 4px;
+  background: #b8874d;
+  border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #A3753C;
+  background: #8f6537;
 }
 
-/* Map marker custom styles */
 .custom-leaflet-marker {
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.2s var(--ease-out);
 }
 .custom-leaflet-marker:hover {
   transform: scale(1.15);
   z-index: 1000 !important;
 }
 
-/* Subtle decorative sahara pattern */
 .bg-sand-pattern {
-  background-color: #FAF7F2;
-  background-image: radial-gradient(#E8DCCD 1px, transparent 1px), radial-gradient(#E8DCCD 1px, #FAF7F2 1px);
+  background-color: var(--portal-paper);
+  background-image: radial-gradient(#e7dccb 1px, transparent 1px), radial-gradient(#e7dccb 1px, var(--portal-paper) 1px);
   background-size: 40px 40px;
   background-position: 0 0, 20px 20px;
 }
 
 .bg-algeria-gradient {
-  background: linear-gradient(135deg, #0F1E36 0%, #15325B 50%, #0C6B58 100%);
+  background: linear-gradient(135deg, #102b40 0%, #17324d 52%, #0c6b58 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

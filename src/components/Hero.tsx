@@ -8,9 +8,8 @@ import {
   Calendar, 
   ArrowRight, 
   ArrowLeft, 
-  Sun, 
-  Wind, 
-  Droplets, 
+  Clock3,
+  PhoneCall,
   Layers, 
   Award, 
   Hotel, 
@@ -44,7 +43,7 @@ export const Hero: React.FC = () => {
     if (res.type === 'site') {
       setActiveTab('map');
     } else if (res.type === 'artisan') {
-      setActiveTab('handicrafts');
+      setActiveTab('artisan');
     } else if (res.type === 'event') {
       setActiveTab('events');
     }
@@ -55,8 +54,8 @@ export const Hero: React.FC = () => {
       {/* Background Graphic & Saharan Imagery */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=2000&q=85" 
-          alt="Dunes of Souf and Thousand Domes"
+src="https://cwbenhuiextfoiyfboxo.supabase.co/storage/v1/object/public/images/places/1785027785073-0-opub7aq720a.jpeg"
+          alt={language === 'ar' ? 'سوق الوادي بعمارة وادي سوف' : language === 'fr' ? 'Marché d’El Oued et architecture du Souf' : 'El Oued market and Souf architecture'}
           className="w-full h-full object-cover opacity-25 mix-blend-luminosity scale-105 transition duration-1000"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0F1E36] via-[#0F1E36]/80 to-[#0A1628]/90"></div>
@@ -74,18 +73,18 @@ export const Hero: React.FC = () => {
             <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
           </div>
 
-          {/* Real-time Saharan Weather Indicator */}
+          {/* Official contact information — no synthetic live-weather claim */}
           <div className="flex items-center gap-4 bg-[#1E293B]/70 border border-[#334155] rounded-xl px-4 py-2 text-xs backdrop-blur-md">
             <div className="flex items-center gap-2 text-amber-400">
-              <Sun className="w-4 h-4 animate-spin-slow" />
-              <span className="font-bold text-white text-sm">28°C</span>
+              <Clock3 className="w-4 h-4" />
+              <span className="font-bold text-white text-sm">08:00–16:30</span>
             </div>
-            <div className="hidden sm:flex items-center gap-3 text-slate-300 border-x border-slate-700 px-3">
-              <span className="flex items-center gap-1"><Droplets className="w-3 h-3 text-teal-400" /> 22%</span>
-              <span className="flex items-center gap-1"><Wind className="w-3 h-3 text-sky-400" /> 14 km/h</span>
+            <div className="hidden sm:flex items-center gap-2 text-slate-300 border-x border-slate-700 px-3">
+              <PhoneCall className="w-3.5 h-3.5 text-teal-400" />
+              <span className="font-mono">1077</span>
             </div>
             <span className="text-emerald-400 font-medium text-[11px]">
-              {language === 'ar' ? 'موسم السياحة الصحراوية مثالي' : language === 'fr' ? 'Saison saharienne idéale' : 'Optimal Saharan Travel Season'}
+              {language === 'ar' ? 'معلومة رسمية' : language === 'fr' ? 'Information officielle' : 'Official information'}
             </span>
           </div>
         </div>
@@ -191,7 +190,7 @@ export const Hero: React.FC = () => {
           </button>
 
           <button
-            onClick={() => setActiveTab('handicrafts')}
+            onClick={() => setActiveTab('artisan')}
             className="flex items-center gap-2 bg-[#1A2E4E]/80 hover:bg-[#C89D66] hover:text-[#0F1E36] text-slate-200 px-4 py-2 rounded-xl text-xs font-semibold transition border border-[#2A4268]"
           >
             <Award className="w-3.5 h-3.5" />
@@ -213,8 +212,8 @@ export const Hero: React.FC = () => {
               <Landmark className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-xl sm:text-2xl font-black text-white font-mono">1,000+</div>
-              <div className="text-[11px] text-slate-300">{t.hero.statDomes}</div>
+              <div className="text-xl sm:text-2xl font-black text-white font-mono">{sites.length}</div>
+              <div className="text-[11px] text-slate-300">{language === 'ar' ? 'معلماً منشوراً على البوابة' : language === 'fr' ? 'sites publiés sur le portail' : 'published portal sites'}</div>
             </div>
           </div>
 
@@ -233,8 +232,8 @@ export const Hero: React.FC = () => {
               <Award className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-xl sm:text-2xl font-black text-white font-mono">450+</div>
-              <div className="text-[11px] text-slate-300">{t.hero.statArtisans}</div>
+              <div className="text-xl sm:text-2xl font-black text-white font-mono">{artisans.length}</div>
+              <div className="text-[11px] text-slate-300">{language === 'ar' ? 'حرفيون في الدليل' : language === 'fr' ? 'artisans dans l’annuaire' : 'artisans in the directory'}</div>
             </div>
           </div>
 
@@ -243,8 +242,8 @@ export const Hero: React.FC = () => {
               <Hotel className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-xl sm:text-2xl font-black text-white font-mono">18+</div>
-              <div className="text-[11px] text-slate-300">{t.hero.statHotels}</div>
+              <div className="text-xl sm:text-2xl font-black text-white font-mono">{events.length}</div>
+              <div className="text-[11px] text-slate-300">{language === 'ar' ? 'فعاليات منشورة' : language === 'fr' ? 'événements publiés' : 'published events'}</div>
             </div>
           </div>
         </div>

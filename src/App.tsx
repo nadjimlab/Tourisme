@@ -10,6 +10,7 @@ import { EventsCalendar } from './components/EventsCalendar';
 import { NewsSection } from './components/NewsSection';
 import { AdminDashboard } from './components/AdminDashboard';
 import { Footer } from './components/Footer';
+import { InstitutionalPages } from './components/InstitutionalPages';
 import { 
   ChevronUp, 
   MapPin, 
@@ -24,6 +25,23 @@ import {
 const MainLayout: React.FC = () => {
   const { activeTab, setActiveTab, language, isRTL, t, loading, dataError } = useApp();
   const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const sectionTitle: Partial<Record<typeof activeTab, string>> = {
+      map: language === 'ar' ? 'الخريطة والمعالم السياحية' : language === 'fr' ? 'Carte & sites touristiques' : 'Map & Tourist Sites',
+      events: language === 'ar' ? 'أجندة الفعاليات' : language === 'fr' ? 'Agenda des événements' : 'Events Agenda',
+      artisan: language === 'ar' ? 'دليل الصناعة التقليدية' : language === 'fr' ? 'Guide de l’artisanat' : 'Handicrafts Directory',
+      investment: language === 'ar' ? 'الاستثمار السياحي' : language === 'fr' ? 'Investissement touristique' : 'Tourism Investment',
+      services: language === 'ar' ? 'الخدمات الرقمية والشكاوى' : language === 'fr' ? 'Services numériques' : 'Digital Services',
+      news: language === 'ar' ? 'الأخبار والمستجدات' : language === 'fr' ? 'Actualités' : 'News & Announcements',
+      about: language === 'ar' ? 'عن المديرية' : language === 'fr' ? 'À propos de la Direction' : 'About the Directorate',
+      contact: language === 'ar' ? 'اتصل بنا' : language === 'fr' ? 'Contact' : 'Contact',
+      privacy: language === 'ar' ? 'سياسة الخصوصية' : language === 'fr' ? 'Politique de confidentialité' : 'Privacy Policy',
+      terms: language === 'ar' ? 'شروط الاستخدام' : language === 'fr' ? 'Conditions d’utilisation' : 'Terms of Use',
+      faq: 'FAQ',
+    };
+    document.title = activeTab === 'home' ? t.directorateName : `${sectionTitle[activeTab] || t.directorateName} | ${t.directorateName}`;
+  }, [activeTab, language, t.directorateName]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,7 +76,7 @@ const MainLayout: React.FC = () => {
       )}
 
       {/* Main Content Router */}
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         {activeTab === 'home' && (
           <div className="space-y-4">
             {/* 1. Hero with Real Imagery, Stats & Search */}
@@ -103,6 +121,11 @@ const MainLayout: React.FC = () => {
         {activeTab === 'events' && <EventsCalendar />}
         {activeTab === 'news' && <NewsSection />}
         {activeTab === 'admin' && <AdminDashboard />}
+        {activeTab === 'about' && <InstitutionalPages page="about" />}
+        {activeTab === 'contact' && <InstitutionalPages page="contact" />}
+        {activeTab === 'privacy' && <InstitutionalPages page="privacy" />}
+        {activeTab === 'terms' && <InstitutionalPages page="terms" />}
+        {activeTab === 'faq' && <InstitutionalPages page="faq" />}
       </main>
 
       {/* Footer */}

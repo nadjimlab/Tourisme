@@ -47,13 +47,17 @@ const toLegacySite = (row: JsonRecord): TouristSite => {
     ? String(row.image_url[0] ?? '')
     : String(row.image_url ?? '').replace(/[\\[\\]"']/g, '').split(',')[0]?.trim() || '';
   const rawCategory = String(row.main_category ?? row.category ?? 'معلم سياحي');
-  const category: TouristSite['category'] = /تراث|تاريخ|سوق|ثقاف/.test(rawCategory)
-    ? 'cultural'
-    : /دين|زاوي/.test(rawCategory)
-      ? 'religious'
-      : /فندق|مطعم|خدمات|صحة/.test(rawCategory)
-        ? 'historical'
-        : 'natural';
+  const category: TouristSite['category'] = /فندق|إقامة|منتجع/.test(rawCategory)
+    ? 'accommodation'
+    : /مطعم|مقهى|أكل/.test(rawCategory)
+      ? 'dining'
+      : /خدمات|صحة|مستشفى|مرافق/.test(rawCategory)
+        ? 'services'
+        : /تراث|تاريخ|سوق|ثقاف/.test(rawCategory)
+          ? 'cultural'
+          : /دين|زاوي/.test(rawCategory)
+            ? 'religious'
+            : 'natural';
   const localizedValue = { ar: name, fr: name, en: name };
   const localizedDescription = { ar: description, fr: description, en: description };
   const localizedAddress = { ar: address, fr: address, en: address };

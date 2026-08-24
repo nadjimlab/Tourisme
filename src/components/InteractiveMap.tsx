@@ -10,13 +10,17 @@ import {
   Check, 
   FileDown, 
   Clock, 
-  Sparkles, 
+  Sparkles,
+  Landmark,
   Compass, 
   Star, 
   Navigation, 
   Eye, 
   X,
-  Share2
+  Share2,
+  Hotel,
+  Utensils,
+  Building2
 } from 'lucide-react';
 import L from 'leaflet';
 
@@ -64,6 +68,9 @@ export const InteractiveMap: React.FC = () => {
       case 'historical': return '#1E3A8A'; // Deep Blue
       case 'cultural': return '#0D9488'; // Teal
       case 'handicrafts': return '#C89D66'; // Desert Sand
+      case 'accommodation': return '#7C3AED';
+      case 'dining': return '#EA580C';
+      case 'services': return '#2563EB';
       default: return '#0F1E36';
     }
   };
@@ -203,9 +210,13 @@ export const InteractiveMap: React.FC = () => {
   const categoriesList: { id: SiteCategory | 'all'; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: 'all', label: t.categories.all, icon: Layers },
     { id: 'cultural', label: t.categories.cultural, icon: Sparkles },
+    { id: 'historical', label: t.categories.historical, icon: Landmark },
     { id: 'natural', label: t.categories.natural, icon: Compass },
     { id: 'religious', label: t.categories.religious, icon: Star },
     { id: 'handicrafts', label: t.categories.handicrafts, icon: MapPin },
+    { id: 'accommodation', label: t.categories.accommodation, icon: Hotel },
+    { id: 'dining', label: t.categories.dining, icon: Utensils },
+    { id: 'services', label: t.categories.services, icon: Building2 },
   ];
 
   return (
@@ -324,7 +335,11 @@ export const InteractiveMap: React.FC = () => {
                 <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-[#059669]"></span> {t.categories.natural}</span>
                 <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-[#D97706]"></span> {t.categories.religious}</span>
                 <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-[#0D9488]"></span> {t.categories.cultural}</span>
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-[#1E3A8A]"></span> {t.categories.historical}</span>
                 <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-[#C89D66]"></span> {t.categories.handicrafts}</span>
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-[#7C3AED]"></span> {t.categories.accommodation}</span>
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-[#EA580C]"></span> {t.categories.dining}</span>
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-[#2563EB]"></span> {t.categories.services}</span>
               </div>
             </div>
           )}

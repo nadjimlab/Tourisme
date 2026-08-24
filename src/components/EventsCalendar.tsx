@@ -1,281 +1,93 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { EventType, TourismEvent } from '../types';
-import { 
-  Calendar as CalendarIcon, 
-  MapPin, 
-  Clock, 
-  Download, 
-  Share2, 
-  Users, 
-  Sparkles, 
-  Check,
-  CheckCircle2,
-  X
-} from 'lucide-react';
+import { Calendar as CalendarIcon, MapPin, Clock, Download, Share2, Sparkles } from 'lucide-react';
 
 export const EventsCalendar: React.FC = () => {
   const { language, t, events } = useApp();
   const [filterType, setFilterType] = useState<EventType | 'all'>('all');
-  const [selectedEvent, setSelectedEvent] = useState<TourismEvent | null>(null);
-  const [registeredSuccess, setRegisteredSuccess] = useState(false);
 
-  const filteredEvents = events.filter(e => {
-    if (filterType === 'all') return true;
-    return e.type === filterType;
-  });
+  const filteredEvents = events.filter((event) => filterType === 'all' || event.type === filterType);
 
   const downloadICS = (event: TourismEvent) => {
     const title = event.title[language] || event.title.ar;
     const location = event.location[language] || event.location.ar;
-    const desc = event.description[language] || event.description.ar;
+    const description = event.description[language] || event.description.ar;
     const start = event.dateStart.replace(/-/g, '');
     const end = event.dateEnd.replace(/-/g, '');
-
-    const icsContent = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Directorate of Tourism El Oued//Events//EN
-BEGIN:VEVENT
-SUMMARY:${title}
-DESCRIPTION:${desc}
-LOCATION:${location}
-DTSTART;VALUE=DATE:${start}
-DTEND;VALUE=DATE:${end}
-STATUS:CONFIRMED
-END:VEVENT
-END:VCALENDAR`;
-
-    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
+    const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Directorate of Tourism El Oued//Events//EN\nBEGIN:VEVENT\nSUMMARY:${title}\nDESCRIPTION:${description}\nLOCATION:${location}\nDTSTART;VALUE=DATE:${start}\nDTEND;VALUE=DATE:${end}\nSTATUS:CONFIRMED\nEND:VEVENT\nEND:VCALENDAR`;
+    const url = URL.createObjectURL(new Blob([icsContent], { type: 'text/calendar;charset=utf-8' }));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `${event.id}.ics`);
+    link.download = `${event.id}.ics`;
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    link.remove();
+    URL.revokeObjectURL(url);
   };
 
-  const handleRegister = (e: React.FormEvent) => {
-    e.preventDefault();
-    setRegisteredSuccess(true);
-    setTimeout(() => {
-      setRegisteredSuccess(false);
-      setSelectedEvent(null);
-    }, 2500);
+  const shareEvent = async (event: TourismEvent) => {
+    const title = event.title[language] || event.title.ar;
+    const location = event.location[language] || event.location.ar;
+    const shareData = { title, text: `${title} — ${location}`, url: window.location.href };
+    if (navigator.share) {
+      await navigator.share(shareData).catch(() => undefined);
+    } else {
+      await navigator.clipboard?.writeText(`${title} — ${window.location.href}`);
+    }
   };
 
   return (
-    <div className="bg-[#FAF7F2] py-10 px-4 sm:px-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        
-        {/* Header */}
-        <div className="bg-white rounded-3xl p-8 shadow-sm border border-[#E8DCCD] flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <section className="bg-[#F8F5EF] px-4 py-10 sm:px-8">
+      <div className="mx-auto max-w-7xl space-y-8">
+        <div className="flex flex-col justify-between gap-6 rounded-3xl border border-[#E7DCCB] bg-white p-6 shadow-[0_10px_30px_rgba(36,49,63,.05)] md:flex-row md:items-center md:p-8">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 text-xs font-bold text-[#C89D66] uppercase tracking-wider mb-2">
-              <CalendarIcon className="w-4 h-4" />
-              <span>{t.nav.events}</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F1E36] font-heading">
-              {t.events.title}
-            </h2>
-            <p className="text-sm sm:text-base text-slate-600 mt-2">
-              {t.events.subtitle}
-            </p>
+            <div className="mb-2 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#B8874D]"><CalendarIcon className="h-4 w-4" /><span>{t.nav.events}</span></div>
+            <h2 className="font-heading text-3xl font-black text-[#17324D] sm:text-4xl">{t.events.title}</h2>
+            <p className="mt-2 text-sm leading-7 text-slate-600 sm:text-base">{t.events.subtitle}</p>
           </div>
-
-          {/* Filter Pills */}
-          <div className="flex items-center gap-1.5 bg-[#F4EDE4] p-1.5 rounded-2xl self-start md:self-auto">
-            <button
-              onClick={() => setFilterType('all')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition ${
-                filterType === 'all' ? 'bg-[#0F1E36] text-white shadow-xs' : 'text-slate-700 hover:text-black'
-              }`}
-            >
-              {t.events.filterAll}
-            </button>
-            <button
-              onClick={() => setFilterType('local')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition ${
-                filterType === 'local' ? 'bg-[#0F1E36] text-white shadow-xs' : 'text-slate-700 hover:text-black'
-              }`}
-            >
-              {t.events.filterLocal}
-            </button>
-            <button
-              onClick={() => setFilterType('national')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition ${
-                filterType === 'national' ? 'bg-[#0F1E36] text-white shadow-xs' : 'text-slate-700 hover:text-black'
-              }`}
-            >
-              {t.events.filterNational}
-            </button>
-            <button
-              onClick={() => setFilterType('international')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition ${
-                filterType === 'international' ? 'bg-[#0F1E36] text-white shadow-xs' : 'text-slate-700 hover:text-black'
-              }`}
-            >
-              {t.events.filterInternational}
-            </button>
+          <div className="flex flex-wrap items-center gap-1.5 rounded-2xl bg-[#F4E8D8] p-1.5">
+            {([['all', t.events.filterAll], ['local', t.events.filterLocal], ['national', t.events.filterNational], ['international', t.events.filterInternational]] as const).map(([type, label]) => (
+              <button key={type} onClick={() => setFilterType(type)} className={`rounded-xl px-3.5 py-2 text-xs font-bold transition active:scale-[.98] ${filterType === type ? 'bg-[#17324D] text-white shadow-sm' : 'text-slate-700 hover:bg-white'}`}>{label}</button>
+            ))}
           </div>
         </div>
 
-        {/* Events Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredEvents.map((event) => (
-            <div
-              key={event.id}
-              className="bg-white rounded-3xl border border-[#E8DCCD] overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group"
-            >
-              <div>
-                {/* Photo & Date Banner */}
-                <div className="relative h-48 bg-slate-900 overflow-hidden">
-                  <img
-                    src={event.image}
-                    alt={event.title[language]}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F1E36] via-transparent to-transparent"></div>
-                  
-                  {/* Category Pill */}
-                  <span className="absolute top-3 right-3 bg-[#0F1E36]/90 text-[#F5D0A9] text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-[#C89D66]/40 backdrop-blur-xs">
-                    {event.type.toUpperCase()}
-                  </span>
-
-                  {/* Dates Banner */}
-                  <div className="absolute bottom-3 left-4 right-4 text-white">
-                    <div className="flex items-center gap-1.5 text-xs text-amber-300 font-bold mb-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>{event.dateStart} ➔ {event.dateEnd}</span>
+        {filteredEvents.length === 0 ? (
+          <div className="rounded-3xl border border-dashed border-[#D8C7AF] bg-white px-6 py-14 text-center">
+            <CalendarIcon className="mx-auto h-10 w-10 text-[#B8874D]" />
+            <h3 className="mt-4 font-heading text-xl font-bold text-[#17324D]">{language === 'ar' ? 'لا توجد فعاليات منشورة حالياً' : language === 'fr' ? 'Aucun événement publié pour le moment' : 'No published events at the moment'}</h3>
+            <p className="mx-auto mt-2 max-w-xl text-sm leading-7 text-slate-600">{language === 'ar' ? 'ستظهر الفعاليات الرسمية هنا بعد اعتمادها ونشرها من المصالح المختصة.' : language === 'fr' ? 'Les événements officiels apparaîtront ici après validation et publication par les services compétents.' : 'Official events will appear here after validation and publication by the competent services.'}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {filteredEvents.map((event) => (
+              <article key={event.id} className="group flex flex-col justify-between overflow-hidden rounded-3xl border border-[#E7DCCB] bg-white shadow-[0_8px_24px_rgba(36,49,63,.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_32px_rgba(36,49,63,.1)]">
+                <div>
+                  <div className="relative h-48 overflow-hidden bg-[#17324D]">
+                    <img src={event.image} alt={event.title[language] || event.title.ar} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#17324D] via-transparent to-transparent" />
+                    <span className="absolute right-3 top-3 rounded-full border border-[#E6C28E]/50 bg-[#17324D]/90 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#F5D0A9]">{event.type}</span>
+                    <div className="absolute bottom-3 left-4 right-4 text-white">
+                      <div className="mb-1 flex items-center gap-1.5 text-xs font-bold text-amber-300"><Clock className="h-3.5 w-3.5" /><span>{event.dateStart} → {event.dateEnd}</span></div>
+                      <h3 className="font-heading text-base font-bold">{event.title[language] || event.title.ar}</h3>
                     </div>
-                    <h3 className="text-base font-bold font-heading text-white line-clamp-1">
-                      {event.title[language]}
-                    </h3>
+                  </div>
+                  <div className="space-y-3 p-5">
+                    <div className="flex items-center gap-2 text-xs text-slate-500"><MapPin className="h-3.5 w-3.5 shrink-0 text-[#B8874D]" /><span className="truncate">{event.location[language] || event.location.ar}</span></div>
+                    <p className="line-clamp-3 text-xs leading-6 text-slate-600">{event.description[language] || event.description.ar}</p>
+                    <div className="border-t border-slate-100 pt-2 text-[11px] text-slate-500"><span className="block font-semibold">{t.events.organizer}:</span><span className="text-slate-700">{event.organizer[language] || event.organizer.ar}</span></div>
                   </div>
                 </div>
-
-                {/* Details */}
-                <div className="p-5 space-y-3">
-                  <div className="flex items-center gap-2 text-xs text-slate-500">
-                    <MapPin className="w-3.5 h-3.5 text-[#C89D66] flex-shrink-0" />
-                    <span className="truncate">{event.location[language]}</span>
-                  </div>
-
-                  <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
-                    {event.description[language]}
-                  </p>
-
-                  <div className="pt-2 border-t border-slate-100 text-[11px] text-slate-500">
-                    <span className="font-semibold block">{t.events.organizer}:</span>
-                    <span className="text-slate-700">{event.organizer[language]}</span>
-                  </div>
+                <div className="grid grid-cols-2 gap-2 p-5 pt-0">
+                  <button onClick={() => downloadICS(event)} className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-[#D8C7AF] bg-[#F8F5EF] py-2.5 text-xs font-bold text-[#17324D] transition hover:bg-[#F4E8D8] active:scale-[.98]" title={t.events.addToCalendar}><Download className="h-3.5 w-3.5 text-[#B8874D]" />.iCal</button>
+                  <button onClick={() => void shareEvent(event)} className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#17324D] py-2.5 text-xs font-bold text-white transition hover:bg-[#0C6B58] active:scale-[.98]"><Share2 className="h-3.5 w-3.5 text-[#E6C28E]" />{language === 'ar' ? 'مشاركة الفعالية' : language === 'fr' ? 'Partager' : 'Share event'}</button>
                 </div>
-              </div>
-
-              {/* Actions */}
-              <div className="p-5 pt-0 grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => downloadICS(event)}
-                  className="w-full bg-[#FAF7F2] hover:bg-[#F4EDE4] text-[#0F1E36] text-xs font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 border border-[#D5C6B4]"
-                  title={t.events.addToCalendar}
-                >
-                  <Download className="w-3.5 h-3.5 text-[#C89D66]" />
-                  <span>.iCal</span>
-                </button>
-
-                <button
-                  onClick={() => setSelectedEvent(event)}
-                  className="w-full bg-[#0F1E36] hover:bg-[#1E3A5F] text-white text-xs font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 shadow-xs"
-                >
-                  <Users className="w-3.5 h-3.5 text-[#C89D66]" />
-                  <span>{t.events.registerAttendance}</span>
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-      </div>
-
-      {/* Register Attendance Modal */}
-      {selectedEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 relative animate-in zoom-in-95 space-y-5">
-            
-            <button
-              onClick={() => setSelectedEvent(null)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div>
-              <span className="text-xs font-bold text-[#C89D66] uppercase tracking-wider block mb-1">
-                {language === 'ar' ? 'تأكيد الحضور والمشاركة' : 'Event Attendance Registration'}
-              </span>
-              <h3 className="text-lg font-bold text-[#0F1E36] font-heading">
-                {selectedEvent.title[language]}
-              </h3>
-              <p className="text-xs text-slate-500 mt-1">
-                {selectedEvent.dateStart} — {selectedEvent.location[language]}
-              </p>
-            </div>
-
-            {registeredSuccess ? (
-              <div className="p-6 bg-emerald-50 rounded-2xl text-center space-y-2 text-emerald-800 animate-in zoom-in-95">
-                <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
-                <h4 className="font-bold text-sm">{language === 'ar' ? 'تم تسجيل حضوركم بنجاح' : 'Registration Confirmed!'}</h4>
-                <p className="text-xs">{language === 'ar' ? 'نتطلع للترحيب بكم في فعاليات وادي سوف.' : 'We look forward to welcoming you to El Oued.'}</p>
-              </div>
-            ) : (
-              <form onSubmit={handleRegister} className="space-y-4">
-                <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
-                    {language === 'ar' ? 'الاسم واللقب' : 'Full Name'} *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full bg-[#FAF7F2] border border-[#D5C6B4] rounded-xl py-2 px-3 text-xs focus:ring-2 focus:ring-[#C89D66] focus:outline-hidden"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
-                    {language === 'ar' ? 'البريد الإلكتروني' : 'Email'} *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    className="w-full bg-[#FAF7F2] border border-[#D5C6B4] rounded-xl py-2 px-3 text-xs focus:ring-2 focus:ring-[#C89D66] focus:outline-hidden"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
-                    {language === 'ar' ? 'رقم الهاتف' : 'Phone'} *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    className="w-full bg-[#FAF7F2] border border-[#D5C6B4] rounded-xl py-2 px-3 text-xs focus:ring-2 focus:ring-[#C89D66] focus:outline-hidden"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-[#0F1E36] hover:bg-[#1E3A5F] text-white text-xs font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-xs"
-                >
-                  <Check className="w-4 h-4" />
-                  <span>{t.events.registerAttendance}</span>
-                </button>
-              </form>
-            )}
-
+              </article>
+            ))}
           </div>
-        </div>
-      )}
-
-    </div>
+        )}
+      </div>
+    </section>
   );
 };

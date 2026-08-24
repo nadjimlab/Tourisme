@@ -1,6 +1,6 @@
 export type Language = 'ar' | 'fr' | 'en';
 
-export type SiteCategory = 'natural' | 'religious' | 'historical' | 'cultural' | 'handicrafts';
+export type SiteCategory = 'natural' | 'religious' | 'historical' | 'cultural' | 'handicrafts' | 'accommodation' | 'dining' | 'services';
 
 export interface TouristSite {
   id: string;

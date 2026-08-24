@@ -42,6 +42,13 @@ export const NewsSection: React.FC = () => {
         </div>
 
         {/* News Grid */}
+        {news.length === 0 ? (
+          <div className="rounded-3xl border border-dashed border-[#D8C7AF] bg-white px-6 py-14 text-center">
+            <Newspaper className="mx-auto h-10 w-10 text-[#B8874D]" />
+            <h3 className="mt-4 font-heading text-xl font-bold text-[#17324D]">{language === 'ar' ? 'لا توجد بيانات منشورة حالياً' : language === 'fr' ? 'Aucun communiqué publié pour le moment' : 'No published announcements at the moment'}</h3>
+            <p className="mx-auto mt-2 max-w-xl text-sm leading-7 text-slate-600">{language === 'ar' ? 'ستُنشر البلاغات والأخبار الرسمية بعد اعتمادها من المصالح المختصة.' : language === 'fr' ? 'Les communiqués officiels seront publiés après validation par les services compétents.' : 'Official announcements will be published after validation by the competent services.'}</p>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {news.map((item) => (
             <div
@@ -96,6 +103,7 @@ export const NewsSection: React.FC = () => {
             </div>
           ))}
         </div>
+        )}
 
       </div>
 

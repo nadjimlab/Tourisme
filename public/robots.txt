@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://nadjimlab.github.io/Tourisme/sitemap.xml

@@ -1,0 +1,12 @@
+{
+  "name": "البوابة السياحية الرسمية لولاية الوادي",
+  "short_name": "سياحة الوادي",
+  "description": "البوابة الرقمية الرسمية لمديرية السياحة والصناعة التقليدية لولاية الوادي",
+  "start_url": "/Tourisme/",
+  "scope": "/Tourisme/",
+  "display": "standalone",
+  "background_color": "#F8F5EF",
+  "theme_color": "#17324D",
+  "lang": "ar",
+  "dir": "rtl"
+}

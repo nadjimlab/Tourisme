@@ -4,7 +4,10 @@ import {
   PhoneCall, 
   Search, 
   Globe, 
-  Shield, 
+  Shield,
+  Building2,
+  HelpCircle,
+  Phone,
   Menu, 
   X, 
   MapPin, 
@@ -48,6 +51,9 @@ export const Navbar: React.FC = () => {
     { id: 'services', label: t.nav.digitalServices, icon: FileText },
     { id: 'news', label: t.nav.news, icon: Newspaper },
     { id: 'admin', label: t.nav.adminPortal, icon: Shield },
+    { id: 'about', label: language === 'ar' ? 'عن المديرية' : language === 'fr' ? 'La Direction' : 'About', icon: Building2 },
+    { id: 'contact', label: language === 'ar' ? 'اتصل بنا' : language === 'fr' ? 'Contact' : 'Contact', icon: Phone },
+    { id: 'faq', label: language === 'ar' ? 'الأسئلة الشائعة' : language === 'fr' ? 'FAQ' : 'FAQ', icon: HelpCircle },
   ];
 
   const handleNavClick = (tabId: NavTab) => {
@@ -57,7 +63,11 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full shadow-md">
+    <>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-bold focus:text-[#17324D] focus:shadow-xl">
+        {language === 'ar' ? 'تجاوز إلى المحتوى الرئيسي' : language === 'fr' ? 'Aller au contenu principal' : 'Skip to main content'}
+      </a>
+      <header className="sticky top-0 z-50 w-full shadow-md">
       {/* Top Ministerial Bar */}
       <div className="bg-[#0A1628] text-[#E2E8F0] border-b border-[#1E293B] text-xs py-1.5 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
@@ -211,7 +221,9 @@ export const Navbar: React.FC = () => {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2 rounded-lg bg-[#1A2E4E] text-slate-200 hover:text-white focus:outline-hidden"
-              aria-label="Toggle menu"
+              aria-label={language === 'ar' ? 'فتح القائمة' : language === 'fr' ? 'Ouvrir le menu' : 'Open menu'}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -281,7 +293,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#0F1E36] border-b border-[#23385B] text-white px-4 py-4 space-y-2 shadow-2xl animate-in slide-in-from-top">
+        <div id="mobile-navigation" className="lg:hidden bg-[#0F1E36] border-b border-[#23385B] text-white px-4 py-4 space-y-2 shadow-2xl animate-in slide-in-from-top">
           {navLinks.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -307,6 +319,7 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
       )}
-    </header>
+      </header>
+    </>
   );
 };

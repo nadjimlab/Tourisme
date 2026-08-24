@@ -104,6 +104,13 @@ export const HandicraftsDirectory: React.FC = () => {
         </div>
 
         {/* Artisans Grid */}
+        {filteredArtisans.length === 0 ? (
+          <div className="rounded-3xl border border-dashed border-[#D8C7AF] bg-white px-6 py-14 text-center">
+            <Sparkles className="mx-auto h-10 w-10 text-[#B8874D]" />
+            <h3 className="mt-4 font-heading text-xl font-bold text-[#17324D]">{language === 'ar' ? 'لا توجد سجلات حرفيين منشورة حالياً' : language === 'fr' ? 'Aucun artisan publié pour le moment' : 'No published artisans at the moment'}</h3>
+            <p className="mx-auto mt-2 max-w-xl text-sm leading-7 text-slate-600">{language === 'ar' ? 'ستظهر السجلات بعد مراجعتها واعتمادها من الجهات المختصة.' : language === 'fr' ? 'Les profils apparaîtront après vérification et validation par les services compétents.' : 'Profiles will appear after verification and validation by the competent services.'}</p>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredArtisans.map((artisan) => (
             <div
@@ -176,6 +183,7 @@ export const HandicraftsDirectory: React.FC = () => {
             </div>
           ))}
         </div>
+        )}
 
       </div>
 

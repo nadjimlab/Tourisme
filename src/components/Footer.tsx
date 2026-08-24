@@ -23,7 +23,7 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
         
         {/* Main 4-Column Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           
           {/* Col 1: Official Directorate Identity */}
           <div className="space-y-4">
@@ -95,7 +95,29 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Col 3: Directorate Contacts & Office */}
+          {/* Col 3: Institutional & Directorate Contacts */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+              {language === 'ar' ? 'المؤسسة والشفافية' : language === 'fr' ? 'Institution & transparence' : 'Institution & transparency'}
+            </h4>
+            <ul className="space-y-2 text-xs text-slate-300">
+              {([
+                ['about', language === 'ar' ? 'عن المديرية' : language === 'fr' ? 'À propos' : 'About'],
+                ['contact', language === 'ar' ? 'اتصل بنا' : language === 'fr' ? 'Contact' : 'Contact'],
+                ['faq', language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'],
+                ['privacy', language === 'ar' ? 'سياسة الخصوصية' : language === 'fr' ? 'Confidentialité' : 'Privacy'],
+                ['terms', language === 'ar' ? 'شروط الاستخدام' : language === 'fr' ? 'Conditions d’utilisation' : 'Terms of use'],
+              ] as const).map(([tab, label]) => (
+                <li key={tab}>
+                  <button onClick={() => { setActiveTab(tab); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-amber-400 transition">
+                    {label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 4: Directorate Contacts & Office */}
           <div className="space-y-3 text-xs text-slate-300">
             <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wider">
               {t.footer.contactUs}
@@ -144,7 +166,7 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Col 4: Emergency & Citizen Assistance Numbers */}
+          {/* Col 5: Emergency & Citizen Assistance Numbers */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wider">
               {language === 'ar' ? 'أرقام الطوارئ والمساعدة السياحية' : 'Emergency & Assistance Numbers'}
