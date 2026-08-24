@@ -19,6 +19,11 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
+-- RLS يحدد الصفوف المسموح بها، وGRANT يحدد صلاحية الوصول للجدول نفسه.
+-- نمنح القراءة للمستخدم المصادق فقط؛ لا نمنح anon أي صلاحية مباشرة.
+REVOKE ALL ON TABLE public.profiles FROM anon;
+GRANT SELECT ON TABLE public.profiles TO authenticated;
+
 CREATE OR REPLACE FUNCTION public.is_staff()
 RETURNS boolean
 LANGUAGE sql

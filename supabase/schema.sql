@@ -172,7 +172,10 @@ drop trigger if exists requests_set_updated_at on public.requests;
 create trigger requests_set_updated_at before update on public.requests for each row execute procedure public.set_updated_at();
 
 alter table public.profiles enable row level security;
-alter table public.sites enable row level security;
+revoke all on table public.profiles from anon;
+grant select on table public.profiles to authenticated;
+
+-- Published content is public.sites enable row level security;
 alter table public.events enable row level security;
 alter table public.artisans enable row level security;
 alter table public.investments enable row level security;
