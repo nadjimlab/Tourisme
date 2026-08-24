@@ -169,13 +169,37 @@ export const Navbar: React.FC = () => {
             onClick={() => handleNavClick('home')}
             className="flex items-center gap-3.5 cursor-pointer group"
           >
-            <div className="rounded-xl bg-white p-1.5 shadow-md transition duration-200 group-hover:scale-[1.02] sm:p-2">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
               <img
-                src={`${import.meta.env.BASE_URL}directorate-official-header.jpg`}
-                alt={t.directorateName}
-                className="h-auto w-[215px] object-contain sm:w-[360px] lg:w-[410px]"
-                width="1078"
-                height="372"
+                src={`${import.meta.env.BASE_URL}algerian-flag-badge.png`}
+                alt={language === 'ar' ? 'العلم الجزائري' : language === 'fr' ? 'Drapeau algérien' : 'Algerian flag'}
+                className="h-10 w-10 shrink-0 object-contain drop-shadow-md sm:h-14 sm:w-14"
+                width="256"
+                height="256"
+                decoding="async"
+              />
+
+              <div className="min-w-0 text-right">
+                <p className="text-[8px] font-medium uppercase tracking-[.08em] text-[#C89D66] sm:text-[11px] sm:tracking-wider">
+                  {t.ministryName}
+                </p>
+                <h1
+                  aria-label={t.directorateName}
+                  className="mt-0.5 flex max-w-[215px] flex-col font-heading leading-tight transition group-hover:text-[#F3E5D8] sm:max-w-[520px]"
+                >
+                  <span lang="ar" dir="rtl" className="text-[13px] font-black text-white sm:text-xl">{t.directorateName}</span>
+                  <span lang="en" dir="ltr" className="mt-0.5 text-[7px] font-semibold tracking-[.01em] text-[#F5D0A9] sm:text-[11px]">Directorate of Tourism and Handicrafts – El Oued Province</span>
+                  <span lang="zgh" dir="ltr" className="mt-0.5 font-tifinagh text-[8px] font-semibold tracking-wide text-[#D7E7DE] sm:text-xs">ⵜⴰⵏⵎⵀⵍⵜ ⵏ ⵜⵓⵔⵉⵙⵎ ⴷ ⵜⵃⵔⴼⵉⵏ – ⵡⴰⴷⵉ ⵙⵓⴼ</span>
+                </h1>
+                <p className="mt-1 hidden text-[10px] text-slate-300 sm:block">{t.slogan}</p>
+              </div>
+
+              <img
+                src={`${import.meta.env.BASE_URL}algerian-republic-emblem.png`}
+                alt={language === 'ar' ? 'شعار الجمهورية الجزائرية' : language === 'fr' ? 'Emblème de la République algérienne' : 'Emblem of the Algerian Republic'}
+                className="hidden h-12 w-12 shrink-0 object-contain drop-shadow-md sm:block sm:h-16 sm:w-16"
+                width="256"
+                height="256"
                 decoding="async"
               />
             </div>
