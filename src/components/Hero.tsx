@@ -53,12 +53,12 @@ export const Hero: React.FC = () => {
     <section className="relative bg-[#0F1E36] text-white overflow-hidden">
       {/* Background Graphic & Saharan Imagery */}
       <div className="absolute inset-0 z-0">
-        <img 
-src="https://cwbenhuiextfoiyfboxo.supabase.co/storage/v1/object/public/images/places/1785027785073-0-opub7aq720a.jpeg"
-          alt={language === 'ar' ? 'سوق الوادي بعمارة وادي سوف' : language === 'fr' ? 'Marché d’El Oued et architecture du Souf' : 'El Oued market and Souf architecture'}
-          className="w-full h-full object-cover opacity-25 mix-blend-luminosity scale-105 transition duration-1000"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0F1E36] via-[#0F1E36]/80 to-[#0A1628]/90"></div>
+          <img
+            src={`${import.meta.env.BASE_URL}el-oued-souf-hero.jpg`}
+            alt={language === 'ar' ? 'كثبان وادي سوف وخيام الصحراء' : language === 'fr' ? 'Dunes du Souf et tentes sahariennes' : 'Souf dunes and Saharan tents'}
+            className="h-full w-full scale-105 object-cover opacity-65 transition duration-1000"
+          />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0F1E36] via-[#0F1E36]/65 to-[#0A1628]/55"></div>
         {/* Subtle decorative geometric overlay */}
         <div className="absolute inset-0 opacity-5 bg-[radial-gradient(#C89D66_1px,transparent_1px)] [background-size:24px_24px]"></div>
       </div>
