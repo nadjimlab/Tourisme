@@ -14,6 +14,7 @@ import { InstitutionalPages } from './components/InstitutionalPages';
 import { FeaturedSites } from './components/FeaturedSites';
 import { DirectorateBrief } from './components/DirectorateBrief';
 import { TourismDirectory } from './components/TourismDirectory';
+import { PortalPillars } from './components/PortalPillars';
 import { 
   ChevronUp, 
   MapPin, 
@@ -85,16 +86,19 @@ const MainLayout: React.FC = () => {
             {/* 1. Hero with Real Imagery, Stats & Search */}
             <Hero />
 
-            {/* 2. Directorate brief */}
+            {/* 2. Three-pillar official portal navigation */}
+            <PortalPillars />
+
+            {/* 3. Directorate brief */}
             <DirectorateBrief />
 
-            {/* 3. Featured destination cards */}
+            {/* 4. Featured destination cards */}
             <FeaturedSites />
 
-            {/* 4. Official-style tourism directory shortcuts */}
+            {/* 5. Official-style tourism directory shortcuts */}
             <TourismDirectory />
 
-            {/* 5. Souf handicrafts and artisan directory */}
+            {/* 6. Souf handicrafts and artisan directory */}
             <section className="py-2">
               <HandicraftsDirectory />
             </section>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import { NavTab, useApp } from '../context/AppContext';
 import { ServiceType, DigitalRequest } from '../types';
 import { 
   FileText, 
@@ -16,7 +16,10 @@ import {
   Award, 
   Sparkles,
   ArrowRight,
-  ArrowLeft
+  ArrowLeft,
+  CalendarDays,
+  Mail,
+  MapPinned
 } from 'lucide-react';
 
 async function downloadReceipt(request: DigitalRequest) {
@@ -25,7 +28,7 @@ async function downloadReceipt(request: DigitalRequest) {
 }
 
 export const DigitalServices: React.FC = () => {
-  const { language, t, isRTL, submitRequest, trackRequest } = useApp();
+  const { language, t, isRTL, submitRequest, trackRequest, setActiveTab } = useApp();
 
   const [activeSubTab, setActiveSubTab] = useState<'complaint' | 'track' | 'forms'>('complaint');
 
@@ -94,6 +97,38 @@ export const DigitalServices: React.FC = () => {
     }
   };
 
+  const serviceLinks: { label: string; description: string; tab: NavTab; icon: React.ComponentType<{ className?: string }> }[] = language === 'ar'
+    ? [
+        { label: 'طلب معلومات', description: 'أرسل طلباً أو شكوى وتابع رقم الملف.', tab: 'services', icon: FileText },
+        { label: 'دليل المؤسسات السياحية', description: 'الإقامة والمطاعم والخدمات على الخريطة.', tab: 'map', icon: MapPinned },
+        { label: 'دليل الصناعة التقليدية', description: 'الحرفيون والمنتجات التقليدية السوفية.', tab: 'artisan', icon: Award },
+        { label: 'الفعاليات', description: 'الأجندة الرسمية للتظاهرات والمهرجانات.', tab: 'events', icon: CalendarDays },
+        { label: 'تحميل الوثائق', description: 'الاستمارات والوصولات الرسمية المتاحة.', tab: 'services', icon: FileDown },
+        { label: 'التواصل مع المديرية', description: 'العنوان والهاتف والبريد الرسمي.', tab: 'contact', icon: Mail },
+      ]
+    : language === 'fr'
+      ? [
+          { label: 'Demande d’information', description: 'Déposez une demande ou une réclamation et suivez votre dossier.', tab: 'services', icon: FileText },
+          { label: 'Annuaire des établissements touristiques', description: 'Hébergements, restaurants et services sur la carte.', tab: 'map', icon: MapPinned },
+          { label: 'Guide de l’artisanat', description: 'Artisans et produits traditionnels du Souf.', tab: 'artisan', icon: Award },
+          { label: 'Événements', description: 'Agenda officiel des manifestations et festivals.', tab: 'events', icon: CalendarDays },
+          { label: 'Téléchargement des documents', description: 'Formulaires et justificatifs officiels disponibles.', tab: 'services', icon: FileDown },
+          { label: 'Contacter la Direction', description: 'Adresse, téléphone et courriel officiels.', tab: 'contact', icon: Mail },
+        ]
+      : [
+          { label: 'Information request', description: 'Submit a request or complaint and track your case.', tab: 'services', icon: FileText },
+          { label: 'Tourism establishments directory', description: 'Accommodation, dining and services on the map.', tab: 'map', icon: MapPinned },
+          { label: 'Handicrafts directory', description: 'Souf artisans and traditional products.', tab: 'artisan', icon: Award },
+          { label: 'Events', description: 'Official agenda of events and festivals.', tab: 'events', icon: CalendarDays },
+          { label: 'Document downloads', description: 'Available official forms and receipts.', tab: 'services', icon: FileDown },
+          { label: 'Contact the Directorate', description: 'Official address, phone and email.', tab: 'contact', icon: Mail },
+        ];
+
+  const openServiceLink = (tab: NavTab) => {
+    setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const officialForms = [
     {
       id: 'form-hotel-classif',
@@ -142,6 +177,26 @@ export const DigitalServices: React.FC = () => {
             <p className="text-sm sm:text-base text-slate-600 mt-2">
               {t.services.subtitle}
             </p>
+          </div>
+
+          {/* Service directory shortcuts */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {serviceLinks.map((service) => {
+              const Icon = service.icon;
+              return (
+                <button
+                  key={service.label}
+                  onClick={() => openServiceLink(service.tab)}
+                  className="group flex items-start gap-3 rounded-2xl border border-[#E8DCCD] bg-white p-4 text-start shadow-xs transition hover:-translate-y-0.5 hover:border-[#C89D66] hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-[#C89D66]"
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F4EDE4] text-[#0C6B58] transition group-hover:bg-[#0C6B58] group-hover:text-white"><Icon className="h-5 w-5" /></span>
+                  <span className="min-w-0">
+                    <span className="block text-sm font-bold text-[#0F1E36]">{service.label}</span>
+                    <span className="mt-1 block text-xs leading-5 text-slate-500">{service.description}</span>
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Sub-tabs switch */}

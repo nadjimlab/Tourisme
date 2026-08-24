@@ -8,6 +8,9 @@ export const translations = {
     // Navigation
     nav: {
       home: 'الرئيسية',
+      officialPortal: 'الصفحة الرسمية',
+      explorer: 'المستكشف السياحي',
+      digitalHub: 'الخدمات الرقمية',
       sitesMap: 'الخريطة والمعالم السياحية',
       events: 'أجندة الفعاليات',
       handicrafts: 'دليل الصناعة التقليدية',
@@ -265,6 +268,9 @@ export const translations = {
     
     nav: {
       home: 'Accueil',
+      officialPortal: 'Portail officiel',
+      explorer: 'Explorateur touristique',
+      digitalHub: 'Services numériques',
       sitesMap: 'Carte & Sites Touristiques',
       events: 'Agenda des Événements',
       handicrafts: 'Guide de l\'Artisanat',
@@ -511,6 +517,9 @@ export const translations = {
     
     nav: {
       home: 'Home',
+      officialPortal: 'Official Portal',
+      explorer: 'Tourism Explorer',
+      digitalHub: 'Digital Services',
       sitesMap: 'Map & Tourist Sites',
       events: 'Events Agenda',
       handicrafts: 'Handicrafts Directory',

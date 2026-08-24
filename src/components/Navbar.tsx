@@ -43,12 +43,12 @@ export const Navbar: React.FC = () => {
   const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   const navLinks: { id: NavTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-    { id: 'home', label: t.nav.home, icon: Home },
-    { id: 'map', label: t.nav.sitesMap, icon: MapPin },
+    { id: 'home', label: t.nav.officialPortal, icon: Home },
+    { id: 'map', label: t.nav.explorer, icon: MapPin },
     { id: 'artisan', label: t.nav.handicrafts, icon: Sparkles },
     { id: 'events', label: t.nav.events, icon: Calendar },
     { id: 'investment', label: t.nav.investment, icon: Briefcase },
-    { id: 'services', label: t.nav.digitalServices, icon: FileText },
+    { id: 'services', label: t.nav.digitalHub, icon: FileText },
     { id: 'news', label: t.nav.news, icon: Newspaper },
     { id: 'admin', label: t.nav.adminPortal, icon: Shield },
     { id: 'about', label: language === 'ar' ? 'عن المديرية' : language === 'fr' ? 'La Direction' : 'About', icon: Building2 },
