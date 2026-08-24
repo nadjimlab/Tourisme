@@ -1,10 +1,9 @@
+import { supabase } from './supabase';
+
 export async function askTourismAssistant(prompt: string): Promise<string> {
-  const response = await fetch('/api/ai', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt }),
+  const { data, error } = await supabase.functions.invoke('tourism-assistant', {
+    body: { prompt },
   });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(payload.error || 'Le service IA est temporairement indisponible.');
-  return String(payload.text || '');
+  if (error) throw new Error(error.message || 'خدمة المساعد غير متاحة مؤقتاً.');
+  return String((data as { text?: string } | null)?.text || '');
 }
