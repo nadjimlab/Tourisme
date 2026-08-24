@@ -4,7 +4,7 @@
 
 ## 1. إعداد Supabase
 
-نفّذ `supabase/schema.sql` ثم `supabase/seed.sql` داخل SQL Editor في مشروع Supabase. بعدها فعّل Realtime للجداول `sites`, `events`, `artisans`, `investments`, `news` و`requests`.
+استخدم **نفس مشروع Supabase الخاص بـ Ouedna** الذي يحتوي جدول `places`، ولا تنشئ مشروعاً جديداً. نفّذ `supabase/schema.sql` ثم `supabase/seed.sql` داخل SQL Editor في ذلك المشروع؛ السكربت يحافظ على `places` ويضيف جداول الموقع الرسمي ويطبّق RLS على المعالم القديمة. بعدها فعّل Realtime للجداول `places`, `sites`, `events`, `artisans`, `investments`, `news` و`requests`.
 
 أنشئ أول مستخدم من **Authentication → Users**، ثم رقِّ حسابه إلى مدير:
 
@@ -37,8 +37,8 @@ supabase functions deploy tourism-assistant --no-verify-jwt
 
 | Variable | القيمة |
 | --- | --- |
-| `VITE_SUPABASE_URL` | رابط مشروع Supabase، مثل `https://project.supabase.co` |
-| `VITE_SUPABASE_ANON_KEY` | مفتاح Supabase anon/public فقط |
+| `VITE_SUPABASE_URL` | رابط مشروع Ouedna نفسه: `https://cwbenhuiextfoiyfboxo.supabase.co` أو القيمة من إعدادات API |
+| `VITE_SUPABASE_ANON_KEY` | مفتاح Supabase anon/public الخاص بمشروع Ouedna فقط |
 
 لا تضف مفتاح `service_role` إلى GitHub Pages. تفرض RLS في Supabase صلاحيات القراءة والكتابة حتى لو كانت هذه القيم العامة موجودة في JavaScript الخاص بالمتصفح.
 
@@ -65,6 +65,6 @@ pnpm dev
 
 ## 5. ملاحظات مهمة
 
-GitHub Pages لا يشغّل Node.js أو Express أو Vercel Functions. لهذا أزيل مسار `api/ai.ts` ونُقل Gemini إلى Supabase Edge Function. إذا لم تُنشر الوظيفة أو لم يُضبط مفتاحها، يبقى الموقع والبيانات والمصادقة عاملين، بينما تكون ميزة المساعد غير متاحة فقط.
+الموقع الجديد يقرأ معالم Ouedna مباشرةً من جدول `places` ويحوّلها إلى بطاقات وخريطة Tourisme 39، لذلك لا يلزم نسخ الصور أو الإحداثيات. GitHub Pages لا يشغّل Node.js أو Express أو Vercel Functions. لهذا أزيل مسار `api/ai.ts` ونُقل Gemini إلى Supabase Edge Function. إذا لم تُنشر الوظيفة أو لم يُضبط مفتاحها، يبقى الموقع والبيانات والمصادقة عاملين، بينما تكون ميزة المساعد غير متاحة فقط.
 
 للمراجع الرسمية: [GitHub Pages عبر GitHub Actions](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)، [Supabase Edge Functions](https://supabase.com/docs/guides/functions)، [Supabase Auth](https://supabase.com/docs/guides/auth)، و[Supabase Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security).

@@ -38,6 +38,45 @@ const toSite = (row: JsonRecord): TouristSite => ({
   bestTimeToVisit: row.best_time_to_visit ? localized(row.best_time_to_visit) : undefined,
 });
 
+const toLegacySite = (row: JsonRecord): TouristSite => {
+  const name = String(row.name ?? 'معلم من وادي سوف');
+  const municipality = String(row.municipality ?? row.district ?? 'ولاية الوادي');
+  const description = String(row.description ?? '');
+  const address = String(row.address ?? municipality);
+  const image = Array.isArray(row.image_url)
+    ? String(row.image_url[0] ?? '')
+    : String(row.image_url ?? '').replace(/[\\[\\]"']/g, '').split(',')[0]?.trim() || '';
+  const rawCategory = String(row.main_category ?? row.category ?? 'معلم سياحي');
+  const category: TouristSite['category'] = /تراث|تاريخ|سوق|ثقاف/.test(rawCategory)
+    ? 'cultural'
+    : /دين|زاوي/.test(rawCategory)
+      ? 'religious'
+      : /فندق|مطعم|خدمات|صحة/.test(rawCategory)
+        ? 'historical'
+        : 'natural';
+  const localizedValue = { ar: name, fr: name, en: name };
+  const localizedDescription = { ar: description, fr: description, en: description };
+  const localizedAddress = { ar: address, fr: address, en: address };
+  const localizedHours = { ar: String(row.opening_hours ?? 'غير محدد'), fr: String(row.opening_hours ?? 'Non communiqué'), en: String(row.opening_hours ?? 'Not provided') };
+  return {
+    id: `ouedna-place-${String(row.id)}`,
+    name: localizedValue,
+    category,
+    commune: { ar: municipality, fr: municipality, en: municipality },
+    coordinates: [Number(row.lat ?? 0), Number(row.lng ?? 0)],
+    description: localizedDescription,
+    history: localizedDescription,
+    images: image ? [image] : [],
+    visitingHours: localizedHours,
+    entryFee: { ar: 'غير محدد', fr: 'Non communiqué', en: 'Not provided' },
+    amenities: { ar: [], fr: [], en: [] },
+    address: localizedAddress,
+    rating: Number(row.rating ?? 0),
+    reviewsCount: 0,
+    isFeatured: true,
+  };
+};
+
 const toEvent = (row: JsonRecord): TourismEvent => ({
   id: String(row.id),
   title: localized(row.title),
@@ -126,8 +165,17 @@ const unwrap = <T>(result: { data: T | null; error: { message: string } | null }
   return result.data ?? ([] as unknown as T);
 };
 
+const unwrapOptional = <T>(result: { data: T | null; error: { message: string } | null }) => {
+  if (result.error) {
+    console.warn('Optional Supabase collection unavailable:', result.error.message);
+    return [] as unknown as T;
+  }
+  return result.data ?? ([] as unknown as T);
+};
+
 export async function fetchPublicCollections(): Promise<PublicCollections> {
-  const [sites, events, artisans, investments, news] = await Promise.all([
+  const [legacyPlaces, sites, events, artisans, investments, news] = await Promise.all([
+    supabase.from('places').select('*').eq('status', 'منشور').order('id', { ascending: false }),
     supabase.from('sites').select('*').eq('is_published', true).order('created_at', { ascending: false }),
     supabase.from('events').select('*').eq('is_published', true).order('date_start', { ascending: true }),
     supabase.from('artisans').select('*').eq('is_published', true).order('created_at', { ascending: false }),
@@ -135,11 +183,11 @@ export async function fetchPublicCollections(): Promise<PublicCollections> {
     supabase.from('news').select('*').eq('is_published', true).order('published_date', { ascending: false }),
   ]);
   return {
-    sites: unwrap(sites).map(toSite),
-    events: unwrap(events).map(toEvent),
-    artisans: unwrap(artisans).map(toArtisan),
-    investments: unwrap(investments).map(toInvestment),
-    news: unwrap(news).map(toNews),
+    sites: [...unwrap(legacyPlaces).map(toLegacySite), ...unwrapOptional(sites).map(toSite)],
+    events: unwrapOptional(events).map(toEvent),
+    artisans: unwrapOptional(artisans).map(toArtisan),
+    investments: unwrapOptional(investments).map(toInvestment),
+    news: unwrapOptional(news).map(toNews),
   };
 }
 
@@ -229,6 +277,12 @@ export async function insertNews(article: NewsArticle) {
 }
 
 export async function deleteContent(table: 'sites' | 'events' | 'artisans' | 'news', id: string) {
+  if (table === 'sites' && id.startsWith('ouedna-place-')) {
+    const legacyId = Number(id.replace('ouedna-place-', ''));
+    const legacyResult = await supabase.from('places').delete().eq('id', legacyId);
+    if (legacyResult.error) throw new Error(legacyResult.error.message);
+    return;
+  }
   const result = await supabase.from(table).delete().eq('id', id);
   if (result.error) throw new Error(result.error.message);
 }
@@ -243,7 +297,7 @@ export async function updateRequest(id: string, status: DigitalRequest['status']
 }
 
 export function subscribeToRealtime(onChange: () => void) {
-  const tables = ['sites', 'events', 'artisans', 'investments', 'news', 'requests'] as const;
+  const tables = ['places', 'sites', 'events', 'artisans', 'investments', 'news', 'requests'] as const;
   const channel = tables.reduce((current, table) => current.on('postgres_changes', { event: '*', schema: 'public', table }, onChange), supabase.channel(`eloued-realtime-${Date.now()}`));
   channel.subscribe();
   return () => { void supabase.removeChannel(channel); };

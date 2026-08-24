@@ -290,3 +290,17 @@ $$;
 
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created after insert on auth.users for each row execute procedure public.handle_new_user();
+
+-- Shared Ouedna legacy table: preserve existing records while applying the official portal policy.
+-- This block is safe to run after the existing places table is present.
+alter table if exists public.places enable row level security;
+drop policy if exists places_public_read on public.places;
+create policy places_public_read on public.places
+  for select to anon, authenticated
+  using (status = 'منشور' or public.is_staff());
+
+drop policy if exists places_staff_write on public.places;
+create policy places_staff_write on public.places
+  for all to authenticated
+  using (public.is_staff())
+  with check (public.is_staff());
