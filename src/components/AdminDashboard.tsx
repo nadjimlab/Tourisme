@@ -20,7 +20,8 @@ import {
   BarChart3, 
   Layers, 
   Send,
-  Eye
+  Eye,
+  Loader2
 } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
@@ -49,7 +50,8 @@ export const AdminDashboard: React.FC = () => {
 
   const [emailInput, setEmailInput] = useState(userEmail || '');
   const [passwordInput, setPasswordInput] = useState('');
-  const [loginError, setLoginError] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [adminTab, setAdminTab] = useState<'overview' | 'sites' | 'complaints' | 'events' | 'artisans' | 'news'>('overview');
 
   // New Site Form
@@ -79,9 +81,25 @@ export const AdminDashboard: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await loginAdmin(emailInput, passwordInput);
-    setLoginError(!result.ok);
-    if (result.ok) setPasswordInput('');
+    setLoginError('');
+    if (!emailInput.trim() || !passwordInput) {
+      setLoginError(language === 'ar' ? 'أدخل البريد الإلكتروني وكلمة المرور.' : language === 'fr' ? 'Saisissez votre adresse e-mail et votre mot de passe.' : 'Enter your email and password.');
+      return;
+    }
+
+    setIsLoggingIn(true);
+    try {
+      const result = await loginAdmin(emailInput, passwordInput);
+      if (!result.ok) {
+        setLoginError(result.error || (language === 'ar' ? 'تعذر تسجيل الدخول.' : language === 'fr' ? 'Connexion impossible.' : 'Sign-in failed.'));
+        return;
+      }
+      setPasswordInput('');
+    } catch (error) {
+      setLoginError(error instanceof Error ? error.message : (language === 'ar' ? 'تعذر الاتصال بخدمة المصادقة.' : language === 'fr' ? 'Impossible de joindre le service d’authentification.' : 'Unable to reach the authentication service.'));
+    } finally {
+      setIsLoggingIn(false);
+    }
   };
 
   const handleCreateSite = async (e: React.FormEvent) => {
@@ -244,18 +262,19 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             {loginError && (
-              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-center gap-2">
+              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-center gap-2" role="alert">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                <span>{language === 'ar' ? 'تعذر تسجيل الدخول. تحقق من البريد الإلكتروني وكلمة المرور أو من صلاحية حسابك الإداري.' : 'Sign-in failed. Check your email, password, and administrative access.'}</span>
+                <span>{loginError}</span>
               </div>
             )}
 
             <button
               type="submit"
-              className="w-full bg-[#0F1E36] hover:bg-[#1E3A5F] text-white text-xs font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-md"
+              disabled={isLoggingIn}
+              className="w-full bg-[#0F1E36] hover:bg-[#1E3A5F] disabled:cursor-wait disabled:opacity-60 text-white text-xs font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-md"
             >
-              <Lock className="w-4 h-4 text-[#C89D66]" />
-              <span>{t.admin.loginBtn}</span>
+              {isLoggingIn ? <Loader2 className="w-4 h-4 animate-spin text-[#C89D66]" /> : <Lock className="w-4 h-4 text-[#C89D66]" />}
+              <span>{isLoggingIn ? (language === 'ar' ? 'جارٍ التحقق...' : language === 'fr' ? 'Vérification…' : 'Signing in…') : t.admin.loginBtn}</span>
             </button>
           </form>
 

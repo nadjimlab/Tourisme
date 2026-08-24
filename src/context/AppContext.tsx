@@ -225,16 +225,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const loginAdmin = async (email: string, password: string): Promise<LoginResult> => {
     const result = await supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
     if (result.error || !result.data.user) return { ok: false, error: result.error?.message || 'Identifiants invalides.' };
-    const profile = await getStaffProfile(result.data.user.id);
-    if (!profile || (profile.role !== 'admin' && profile.role !== 'editor')) {
+
+    try {
+      const profile = await getStaffProfile(result.data.user.id);
+      if (!profile || (profile.role !== 'admin' && profile.role !== 'editor')) {
+        await supabase.auth.signOut();
+        return { ok: false, error: 'Ce compte n’est pas autorisé à accéder à l’administration.' };
+      }
+      setStaffProfile(profile);
+      setIsAdmin(true);
+      setUserEmail(result.data.user.email ?? null);
+      await refreshData(true);
+      return { ok: true };
+    } catch (error) {
       await supabase.auth.signOut();
-      return { ok: false, error: 'Ce compte n’est pas autorisé à accéder à l’administration.' };
+      return { ok: false, error: error instanceof Error ? error.message : 'Impossible de charger les autorisations administratives.' };
     }
-    setStaffProfile(profile);
-    setIsAdmin(true);
-    setUserEmail(result.data.user.email ?? null);
-    await refreshData(true);
-    return { ok: true };
   };
 
   const logoutAdmin = async () => {
