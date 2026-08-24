@@ -161,7 +161,7 @@ export const Navbar: React.FC = () => {
       </div>
 
       {/* Main Branding Bar */}
-      <div className="bg-[#0F1E36] text-white py-3 px-4 sm:px-8 border-b border-[#1E3A5F]">
+      <div className="bg-[#0F1E36] text-white py-3 px-4 sm:px-8 border-b border-[#1E3A5F] bg-[radial-gradient(circle_at_15%_30%,rgba(200,157,102,.18),transparent_28%),radial-gradient(circle_at_88%_80%,rgba(12,107,88,.16),transparent_30%)]">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
           {/* Logo & Official Title */}
@@ -182,13 +182,15 @@ export const Navbar: React.FC = () => {
             </div>
 
             <div>
-              <p className="text-[11px] font-medium text-[#C89D66] uppercase tracking-wider">
+              <p className="text-[10px] sm:text-[11px] font-medium text-[#C89D66] uppercase tracking-wider">
                 {t.ministryName}
               </p>
-              <h1 className="text-base sm:text-lg font-bold text-white leading-tight font-heading group-hover:text-[#F3E5D8] transition">
-                {t.directorateName}
+              <h1 aria-label="مديرية السياحة والصناعة التقليدية لولاية الوادي | Directorate of Tourism and Handicrafts – El Oued Province" className="mt-0.5 flex max-w-[245px] flex-col text-right font-heading leading-tight group-hover:text-[#F3E5D8] transition sm:max-w-none">
+                <span lang="ar" dir="rtl" className="text-[13px] font-black text-white sm:text-lg">مديرية السياحة والصناعة التقليدية لولاية الوادي</span>
+                <span lang="en" dir="ltr" className="mt-0.5 text-[8px] font-semibold tracking-[.02em] text-[#F5D0A9] sm:text-[11px]">Directorate of Tourism and Handicrafts – El Oued Province</span>
+                <span lang="zgh" dir="ltr" className="mt-0.5 font-tifinagh text-[10px] font-semibold tracking-wide text-[#D7E7DE] sm:text-xs">ⵜⴰⵏⵎⵉⵔⵜ ⵏ ⵜⵓⵔⵉⵙⵎ ⴷ ⵓⵙⵏⴰⵡ ⵏ ⵡⴰⴷ ⵙⵓⴼ</span>
               </h1>
-              <p className="text-[11px] text-slate-300 hidden sm:block">
+              <p className="mt-1 text-[10px] text-slate-300 hidden sm:block">
                 {t.slogan}
               </p>
             </div>

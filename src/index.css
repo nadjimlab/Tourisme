@@ -42,6 +42,11 @@
     font-family: 'Amiri', serif;
   }
 
+  .font-tifinagh {
+    font-family: 'Noto Sans Tifinagh', 'Cairo', sans-serif;
+    font-feature-settings: 'kern';
+  }
+
   :focus-visible {
     outline: 3px solid #e6c28e;
     outline-offset: 3px;
